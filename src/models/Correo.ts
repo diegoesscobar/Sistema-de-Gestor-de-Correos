@@ -17,4 +17,16 @@ export class Correo {
     }
     this._destinatarios = [...destinatarios]; // Copia inicial
   }
+  // Retorna una copia para que nadie modifique el array original
+  public get destinatarios(): ReadonlyArray<Contacto> {
+    return [...this._destinatarios];
+  }
+
+  public get leido(): boolean {
+    return this._leido;
+  }
+
+  public get favorito(): boolean {
+    return this._favorito;
+  }
 }
