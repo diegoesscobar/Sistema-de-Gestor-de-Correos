@@ -12,4 +12,17 @@ describe('RF-01: Entidad Correo Base', () => {
         expect(correo.leido).toBe(false);
         expect(correo.favorito).toBe(false);
     });
+
+    it('Debe encapsular la colección de destinatarios', () => {
+        const correo = new Correo('2', 'TP', 'Cuerpo', remitente, [dest1]);
+        const arrayExpuesto = correo.destinatarios as Contacto[];
+        arrayExpuesto.push(new Contacto('Profe', 'profe@ucp.edu.ar'));
+
+        expect(correo.destinatarios.length).toBe(1); // No debe alterarse
+    });
+
+    it('Debe lanzar error si faltan datos', () => {
+        expect(() => new Correo('', 'TP', 'Cuerpo', remitente, [])).toThrow();
+    });
+
 });
