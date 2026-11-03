@@ -12,6 +12,9 @@ export class Correo {
     public readonly remitente: Contacto,
     destinatarios: Contacto[]
   ) {
-    this._destinatarios = destinatarios;
+    if (!id || !asunto || !contenido || !remitente || !destinatarios || destinatarios.length === 0) {
+      throw new Error('Faltan datos obligatorios');
+    }
+    this._destinatarios = [...destinatarios]; // Copia inicial
   }
 }
