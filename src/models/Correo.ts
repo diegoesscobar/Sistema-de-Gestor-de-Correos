@@ -29,4 +29,15 @@ export class Correo {
   public get favorito(): boolean {
     return this._favorito;
   }
+  public marcarComoLeido(): void {
+    this._leido = true;
+  }
+
+  public marcarComoNoLeido(): void {
+    this._leido = false;
+  }
+
+  public alternarFavorito(): void {
+    this._favorito = !this._favorito;
+  }
 }
