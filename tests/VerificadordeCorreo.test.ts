@@ -26,4 +26,26 @@ describe('VerificadorDeCorreo', () => {
       expect(esValido).toBe(false);
     });
   });
-})
+  it('debería rechazar un correo sin dominio o extensión', () => {
+      const esValido = VerificadorDeCorreo.validar('usuario@');
+      expect(esValido).toBe(false);
+    });
+
+    it('debería rechazar un correo sin nombre de usuario antes del @', () => {
+      const esValido = VerificadorDeCorreo.validar('@dominio.com');
+      expect(esValido).toBe(false);
+    });
+
+    it('debería rechazar un correo con espacios en blanco en el medio', () => {
+      const esValido = VerificadorDeCorreo.validar('usuario @dominio.com');
+      expect(esValido).toBe(false);
+    });
+
+    it('debería rechazar valores vacíos, nulos o que no sean strings', () => {
+      expect(VerificadorDeCorreo.validar('')).toBe(false);
+      // @ts-ignore
+      expect(VerificadorDeCorreo.validar(null)).toBe(false);
+      // @ts-ignore
+      expect(VerificadorDeCorreo.validar(undefined)).toBe(false);
+    });
+  });
