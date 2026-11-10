@@ -27,6 +27,11 @@ export abstract class Bandeja {
     public obtenerCorreos(): Correo[] {
         return [...this.correos];
     }
+
+    // RF-08: filter devuelve un array nuevo, asi que no se toca la bandeja original
+    public obtenerNoLeidos(): Correo[] {
+        return this.correos.filter(c => !c.leido);
+    }
 }
 
 export class BandejaEntrada extends Bandeja {

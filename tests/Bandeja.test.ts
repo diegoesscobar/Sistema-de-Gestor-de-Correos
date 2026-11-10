@@ -40,4 +40,31 @@ describe('Estructura de Bandejas', () => {
     expect(bandeja.obtenerCorreos()).toHaveLength(1);
     expect(bandeja.obtenerCorreos()[0].asunto).toBe('Asunto Original');
   });
+
+  describe('RF-08: Correos no leídos', () => {
+    it('Debería devolver solo los correos no leídos sin sacarlos de la bandeja', () => {
+      const bandeja = new BandejaEntrada();
+      const leido = new Correo('1', 'Leido', 'Texto', remitente, [destinatario]);
+      const noLeido = new Correo('2', 'No leido', 'Texto', remitente, [destinatario]);
+      leido.marcarComoLeido();
+      bandeja.agregarCorreo(leido);
+      bandeja.agregarCorreo(noLeido);
+
+      expect(bandeja.obtenerNoLeidos()).toHaveLength(1);
+      expect(bandeja.obtenerNoLeidos()[0].id).toBe('2');
+      expect(bandeja.obtenerCorreos()).toHaveLength(2);
+    });
+
+    it('Debería reflejar al instante el cambio de estado de lectura', () => {
+      const bandeja = new BandejaEntrada();
+      const correo = new Correo('1', 'Hola', 'Texto', remitente, [destinatario]);
+      bandeja.agregarCorreo(correo);
+
+      correo.marcarComoLeido();
+      expect(bandeja.obtenerNoLeidos()).toHaveLength(0);
+
+      correo.marcarComoNoLeido();
+      expect(bandeja.obtenerNoLeidos()).toHaveLength(1);
+    });
+  });
 });
