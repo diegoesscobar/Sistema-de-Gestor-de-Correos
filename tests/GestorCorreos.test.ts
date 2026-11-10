@@ -33,4 +33,17 @@ describe('GestorCorreos', () => {
             expect(() => gestor.editarBorrador('x', 'Hola')).toThrow('El borrador no existe');
         });
     });
+
+    describe('RF-02: Envío de correos', () => {
+        it('Debería mover el borrador válido a Enviados', () => {
+            const gestor = new GestorCorreos();
+            const borrador = gestor.crearBorrador();
+            gestor.editarBorrador(borrador.id, 'TP', 'Cuerpo', remitente, [dest1]);
+
+            gestor.enviarBorrador(borrador.id);
+
+            expect(gestor.obtenerEnviados()).toHaveLength(1);
+            expect(gestor.obtenerBorradores()).toHaveLength(0);
+        });
+    });
 });
