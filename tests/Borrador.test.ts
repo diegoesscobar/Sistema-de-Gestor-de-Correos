@@ -21,4 +21,9 @@ describe('RF-07: Borrador', () => {
         const borrador = new Borrador('b3', '   ', 'Cuerpo', remitente, [dest1]);
         expect(borrador.esValidoParaEnviar()).toBe(false);
     });
+
+    it('No debería ser válido si no tiene contenido', () => {
+        const borrador = new Borrador('b4', 'TP', '', remitente, [dest1]);
+        expect(borrador.esValidoParaEnviar()).toBe(false);
+    });
 });

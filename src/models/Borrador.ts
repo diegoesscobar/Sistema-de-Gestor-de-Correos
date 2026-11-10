@@ -9,9 +9,12 @@ export class Borrador {
         public destinatarios: Contacto[] = []
     ) { }
 
-    // El borrador puede estar incompleto, pero para enviarlo necesita remitente, asunto y al menos un destinatario
+    // El borrador puede estar incompleto, pero para enviarlo necesita remitente, asunto, contenido y al menos un destinatario
     public esValidoParaEnviar(): boolean {
         if (!this.remitente || this.asunto.trim().length === 0) {
+            return false;
+        }
+        if (this.contenido.trim().length === 0) {
             return false;
         }
         return this.destinatarios.length > 0;

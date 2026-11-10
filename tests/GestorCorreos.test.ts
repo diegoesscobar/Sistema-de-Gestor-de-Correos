@@ -45,5 +45,25 @@ describe('GestorCorreos', () => {
             expect(gestor.obtenerEnviados()).toHaveLength(1);
             expect(gestor.obtenerBorradores()).toHaveLength(0);
         });
+
+        it('No debería enviar un borrador incompleto y debería dejarlo en Borradores', () => {
+            const gestor = new GestorCorreos();
+            const borrador = gestor.crearBorrador();
+            gestor.editarBorrador(borrador.id, 'TP', '', remitente, [dest1]);
+
+            expect(() => gestor.enviarBorrador(borrador.id)).toThrow('El borrador no está completo para enviarse');
+            expect(gestor.obtenerBorradores()).toHaveLength(1);
+            expect(gestor.obtenerEnviados()).toHaveLength(0);
+        });
+
+        it('No debería duplicar el correo si se intenta enviar dos veces', () => {
+            const gestor = new GestorCorreos();
+            const borrador = gestor.crearBorrador();
+            gestor.editarBorrador(borrador.id, 'TP', 'Cuerpo', remitente, [dest1]);
+
+            gestor.enviarBorrador(borrador.id);
+            expect(() => gestor.enviarBorrador(borrador.id)).toThrow('El borrador no existe');
+            expect(gestor.obtenerEnviados()).toHaveLength(1);
+        });
     });
 });
