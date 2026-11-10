@@ -1,0 +1,19 @@
+import { Contacto } from './Contacto';
+
+export class Borrador {
+    constructor(
+        public id: string,
+        public asunto: string = '',
+        public contenido: string = '',
+        public remitente?: Contacto,
+        public destinatarios: Contacto[] = []
+    ) { }
+
+    // El borrador puede estar incompleto, pero para enviarlo necesita remitente, asunto y al menos un destinatario
+    public esValidoParaEnviar(): boolean {
+        if (!this.remitente || this.asunto.trim().length === 0) {
+            return false;
+        }
+        return this.destinatarios.length > 0;
+    }
+}
