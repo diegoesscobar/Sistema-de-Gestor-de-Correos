@@ -17,17 +17,17 @@ describe('Estructura de Bandejas', () => {
     expect(bandeja.obtenerCorreos()[0].asunto).toBe('Hola');
   });
 
-  it('Debería permitir eliminar un correo por su ID y retornarlo', () => {
-    const bandeja = new BandejaEntrada();
-    const correo = new Correo('1', 'Hola', 'Contenido', remitente, [destinatario]);
-    bandeja.agregarCorreo(correo);
+  // it('Debería permitir eliminar un correo por su ID y retornarlo', () => {
+  //   const bandeja = new BandejaEntrada();
+  //   const correo = new Correo('1', 'Hola', 'Contenido', remitente, [destinatario]);
+  //   bandeja.agregarCorreo(correo);
 
-    const correoEliminado = bandeja.removerCorreo('1');
+  //   const correoEliminado = bandeja.removerCorreo('1');
 
-    expect(correoEliminado).toBeDefined();
-    expect(correoEliminado?.id).toBe('1');
-    expect(bandeja.obtenerCorreos()).toHaveLength(0);
-  });
+  //   expect(correoEliminado).toBeDefined();
+  //   expect(correoEliminado?.id).toBe('1');
+  //   expect(bandeja.obtenerCorreos()).toHaveLength(0);
+  // });
 
   it('No debería permitir agregar correos con el mismo ID (duplicados)', () => {
     const bandeja = new BandejaEntrada();

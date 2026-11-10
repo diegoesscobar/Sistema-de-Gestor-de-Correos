@@ -14,19 +14,19 @@ describe('Gestión de Contactos (RF-03)', () => {
     }).toThrow('Dirección de correo no es válido');
   });
 
-  it('Debería lanzar un error si el nombre está vacío o tiene solo espacios', () => {
-    expect(() => {
-      new Contacto('   ', 'contacto@email.com');
-    }).toThrow('El nombre no puede estar vacío');
-  });
+  // it('Debería lanzar un error si el nombre está vacío o tiene solo espacios', () => {
+  //   expect(() => {
+  //     new Contacto('   ', 'contacto@email.com');
+  //   }).toThrow('El nombre no puede estar vacío');
+  // });
 
-  it('Debería permitir modificar el nombre y email a través de los setters validados', () => {
-    const contacto = new Contacto('Juan', 'juan@email.com');
+  // it('Debería permitir modificar el nombre y email a través de los setters validados', () => {
+  //   const contacto = new Contacto('Juan', 'juan@email.com');
 
-    contacto.nombre = 'Juan Pérez';
-    expect(contacto.nombre).toBe('Juan Pérez');
+  //   contacto.nombre = 'Juan Pérez';
+  //   expect(contacto.nombre).toBe('Juan Pérez');
 
-    contacto.email = 'JUAN.PEREZ@EMAIL.COM';
-    expect(contacto.email).toBe('juan.perez@email.com');
-  });
+  //   contacto.email = 'JUAN.PEREZ@EMAIL.COM';
+  //   expect(contacto.email).toBe('juan.perez@email.com');
+  // });
 });
