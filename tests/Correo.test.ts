@@ -18,11 +18,38 @@ describe('RF-01: Entidad Correo Base', () => {
         const arrayExpuesto = correo.destinatarios as Contacto[];
         arrayExpuesto.push(new Contacto('Profe', 'profe@ucp.edu.ar'));
 
-        expect(correo.destinatarios.length).toBe(1); // No debe alterarse
+        expect(correo.destinatarios.length).toBe(1); 
     });
 
     it('Debe lanzar error si faltan datos', () => {
         expect(() => new Correo('', 'TP', 'Cuerpo', remitente, [])).toThrow();
     });
 
+    describe('RF-08: Gestión de lectura', () => {
+        it('Debería marcar y desmarcar correctamente el correo como leído', () => {
+            const correo = new Correo('1', 'Test', 'Contenido', remitente, [dest1]);
+            
+            expect(correo.leido).toBe(false);
+
+            correo.marcarComoLeido();
+            expect(correo.leido).toBe(true);
+
+            correo.marcarComoNoLeido();
+            expect(correo.leido).toBe(false);
+        });
+    });
+
+    describe('RF-09: Gestión de favoritos', () => {
+        it('Debería alternar el estado de favorito correctamente', () => {
+            const correo = new Correo('1', 'Test', 'Contenido', remitente, [dest1]);
+            
+            expect(correo.favorito).toBe(false);
+
+            correo.alternarFavorito();
+            expect(correo.favorito).toBe(true);
+
+            correo.alternarFavorito();
+            expect(correo.favorito).toBe(false);
+        });
+    });
 });
