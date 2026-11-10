@@ -94,4 +94,10 @@ export class GestorCorreos {
         origen.agregarCorreo(correo);
         this._origenes.delete(idCorreo);
     }
+
+    // RF-09: vista de favoritos de todas las bandejas menos Eliminados, sin mover los correos
+    public obtenerFavoritos(): Correo[] {
+        const correos = [...this._entrada.obtenerCorreos(), ...this._enviados.obtenerCorreos()];
+        return correos.filter(c => c.favorito);
+    }
 }

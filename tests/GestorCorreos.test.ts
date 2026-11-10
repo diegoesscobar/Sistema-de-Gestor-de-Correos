@@ -98,4 +98,37 @@ describe('GestorCorreos', () => {
             expect(() => gestor.restaurarCorreo('x')).toThrow('El correo no está en Eliminados');
         });
     });
+
+    describe('RF-09: Vista de favoritos', () => {
+        it('Debería juntar los favoritos de Entrada y Enviados sin moverlos', () => {
+            const gestor = new GestorCorreos();
+            const recibido = new Correo('1', 'Hola', 'Texto', dest1, [remitente]);
+            gestor.recibirCorreo(recibido);
+            gestor.recibirCorreo(new Correo('2', 'Otro', 'Texto', dest1, [remitente]));
+            const borrador = gestor.crearBorrador();
+            gestor.editarBorrador(borrador.id, 'TP', 'Cuerpo', remitente, [dest1]);
+            const enviado = gestor.enviarBorrador(borrador.id);
+
+            recibido.alternarFavorito();
+            enviado.alternarFavorito();
+
+            expect(gestor.obtenerFavoritos()).toHaveLength(2);
+            expect(gestor.obtenerEntrada()).toHaveLength(2);
+            expect(gestor.obtenerEnviados()).toHaveLength(1);
+        });
+
+        it('Un favorito eliminado no aparece hasta restaurarlo y conserva su indicador', () => {
+            const gestor = new GestorCorreos();
+            const correo = new Correo('1', 'Hola', 'Texto', dest1, [remitente]);
+            gestor.recibirCorreo(correo);
+            correo.alternarFavorito();
+
+            gestor.eliminarCorreo('1');
+            expect(gestor.obtenerFavoritos()).toHaveLength(0);
+            expect(gestor.obtenerEliminados()[0].favorito).toBe(true);
+
+            gestor.restaurarCorreo('1');
+            expect(gestor.obtenerFavoritos()).toHaveLength(1);
+        });
+    });
 });
