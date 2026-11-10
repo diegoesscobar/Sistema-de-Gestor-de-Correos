@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { GestorCorreos } from '../src/models/GestorCorreos';
 import { Contacto } from '../src/models/Contacto';
+import { Correo } from '../src/models/Correo';
 
 describe('GestorCorreos', () => {
     const remitente = new Contacto('Gabi', 'gabi@ucp.edu.ar');
@@ -64,6 +65,18 @@ describe('GestorCorreos', () => {
             gestor.enviarBorrador(borrador.id);
             expect(() => gestor.enviarBorrador(borrador.id)).toThrow('El borrador no existe');
             expect(gestor.obtenerEnviados()).toHaveLength(1);
+        });
+    });
+
+    describe('Eliminar correos', () => {
+        it('Debería pasar el correo de Entrada a Eliminados sin duplicarlo', () => {
+            const gestor = new GestorCorreos();
+            gestor.recibirCorreo(new Correo('1', 'Hola', 'Texto', dest1, [remitente]));
+
+            gestor.eliminarCorreo('1');
+
+            expect(gestor.obtenerEntrada()).toHaveLength(0);
+            expect(gestor.obtenerEliminados()).toHaveLength(1);
         });
     });
 });

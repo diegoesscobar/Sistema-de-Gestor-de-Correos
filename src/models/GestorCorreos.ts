@@ -2,11 +2,14 @@ import { Borrador } from './Borrador';
 import { BandejaBorradores } from './BandejaBorradores';
 import { Contacto } from './Contacto';
 import { Correo } from './Correo';
-import { BandejaEnviados } from './Bandeja';
+import { Bandeja, BandejaEntrada, BandejaEnviados, BandejaEliminados } from './Bandeja';
 
 export class GestorCorreos {
     private _borradores: BandejaBorradores = new BandejaBorradores();
+    private _entrada: BandejaEntrada = new BandejaEntrada();
     private _enviados: BandejaEnviados = new BandejaEnviados();
+    private _eliminados: BandejaEliminados = new BandejaEliminados();
+    private _origenes: Map<string, Bandeja> = new Map(); // id del correo -> bandeja de donde salió
     private _contadorBorradores: number = 0;
 
     // Al empezar a redactar se registra un borrador vacío con un id propio
@@ -54,5 +57,30 @@ export class GestorCorreos {
 
     public obtenerEnviados(): Correo[] {
         return this._enviados.obtenerCorreos();
+    }
+
+    // Simula la llegada de un correo a la bandeja de entrada
+    public recibirCorreo(correo: Correo): void {
+        this._entrada.agregarCorreo(correo);
+    }
+
+    public obtenerEntrada(): Correo[] {
+        return this._entrada.obtenerCorreos();
+    }
+
+    public obtenerEliminados(): Correo[] {
+        return this._eliminados.obtenerCorreos();
+    }
+
+    // Busca el correo en Entrada o Enviados, lo pasa a Eliminados y se acuerda de donde venía
+    public eliminarCorreo(idCorreo: string): void {
+        const bandejas: Bandeja[] = [this._entrada, this._enviados];
+        const origen = bandejas.find(b => b.obtenerCorreos().some(c => c.id === idCorreo));
+        if (!origen) {
+            throw new Error('El correo no existe');
+        }
+        const correo = origen.removerCorreo(idCorreo)!;
+        this._eliminados.agregarCorreo(correo);
+        this._origenes.set(idCorreo, origen);
     }
 }

@@ -50,3 +50,7 @@ export class BandejaEnviados extends Bandeja {
 export class BandejaSpam extends Bandeja {
     // Reglas específicas para correos marcados como spam
 }
+
+export class BandejaEliminados extends Bandeja {
+    // Correos retirados de su bandeja original, se pueden restaurar
+}
