@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "Sistema de gestión de correos electrónicos con POO y Programación Funcional en TypeScript",
   "scripts": {
-    "test": "vitest"
+    "test": "vitest",
+    "coverage": "vitest run --coverage"
   },
   "keywords": [
     "typescript",
@@ -14,7 +15,8 @@
   "author": "Diego Gerónimo Escobar y Gabriel Fagundez",
   "license": "ISC",
   "devDependencies": {
+    "@vitest/coverage-v8": "^1.6.1",
     "typescript": "^5.0.0",
-    "vitest": "^1.0.0"
+    "vitest": "^1.6.1"
   }
 }
