@@ -83,4 +83,15 @@ export class GestorCorreos {
         this._eliminados.agregarCorreo(correo);
         this._origenes.set(idCorreo, origen);
     }
+
+    // Devuelve el correo eliminado a la bandeja de donde había salido
+    public restaurarCorreo(idCorreo: string): void {
+        const origen = this._origenes.get(idCorreo);
+        const correo = this._eliminados.removerCorreo(idCorreo);
+        if (!correo || !origen) {
+            throw new Error('El correo no está en Eliminados');
+        }
+        origen.agregarCorreo(correo);
+        this._origenes.delete(idCorreo);
+    }
 }

@@ -78,5 +78,24 @@ describe('GestorCorreos', () => {
             expect(gestor.obtenerEntrada()).toHaveLength(0);
             expect(gestor.obtenerEliminados()).toHaveLength(1);
         });
+
+        it('Debería restaurar el correo a su bandeja de origen', () => {
+            const gestor = new GestorCorreos();
+            const borrador = gestor.crearBorrador();
+            gestor.editarBorrador(borrador.id, 'TP', 'Cuerpo', remitente, [dest1]);
+            gestor.enviarBorrador(borrador.id);
+
+            gestor.eliminarCorreo(borrador.id);
+            gestor.restaurarCorreo(borrador.id);
+
+            expect(gestor.obtenerEnviados()).toHaveLength(1);
+            expect(gestor.obtenerEntrada()).toHaveLength(0);
+            expect(gestor.obtenerEliminados()).toHaveLength(0);
+        });
+
+        it('Debería lanzar error al restaurar un correo que no está en Eliminados', () => {
+            const gestor = new GestorCorreos();
+            expect(() => gestor.restaurarCorreo('x')).toThrow('El correo no está en Eliminados');
+        });
     });
 });
