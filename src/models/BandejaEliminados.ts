@@ -6,19 +6,26 @@ export class BandejaEliminados extends Bandeja {
     super();
   }
 
-  // Al igual que las demás, evitamos duplicados en la papelera
-  public agregarCorreo(correo: Correo): void {
+  // Control defensivo de duplicados al enviar un correo a la papelera
+  public override agregarCorreo(correo: Correo): void {
     const existe = this.correos.some(c => c.id === correo.id);
+    
     if (!existe) {
       super.agregarCorreo(correo);
     } else {
-      console.warn(`[Aviso] El correo con ID ${correo.id} ya se encuentra en eliminados.`);
+      console.warn(`[Aviso] El correo con ID ${correo.id} ya se encuentra en la Bandeja de Eliminados.`);
     }
   }
-  // Sacamos el correo de eliminados por su ID para que pueda volver a su bandeja
+
+  // Método específico: Restaura un correo de la papelera devolviéndolo para reubicarlo
   public restaurarCorreo(idCorreo: string): Correo | undefined {
-    return this.removerCorreo(idCorreo); 
-    // Reutilizamos 'removerCorreo' del padre, ya que al removerlo de la papelera 
-    // lo devolvemos listo para ser reingresado en su bandeja original.
+    const correoEncontrado = this.correos.find(c => c.id === idCorreo);
+    
+    if (correoEncontrado) {
+      return this.removerCorreo(idCorreo); // Lo quita de eliminados y lo retorna
+    } else {
+      console.warn(`[Aviso] No se encontró el correo con ID ${idCorreo} en la Bandeja de Eliminados.`);
+      return undefined;
+    }
   }
 }
