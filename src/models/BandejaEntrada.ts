@@ -2,21 +2,7 @@ import { Bandeja } from './Bandeja';
 import { Correo } from './Correo';
 
 export class BandejaEntrada extends Bandeja {
-  
-  constructor() {
-    super(); // Inicializa el array de correos heredado de la superclase
-  }
-
-  // Control defensivo de duplicados al agregar un correo
-  public override agregarCorreo(correo: Correo): void {
-    const existe = this.correos.some(c => c.id === correo.id);
-    
-    if (!existe) {
-      super.agregarCorreo(correo);
-    } else {
-      console.warn(`[Aviso] El correo con ID ${correo.id} ya existe en la Bandeja de Entrada.`);
-    }
-  }
+  // agregarCorreo y el control de duplicados se heredan de Bandeja
 
   // Método específico: Marcar un correo como leído usando el método de Correo
   public marcarComoLeido(idCorreo: string): void {

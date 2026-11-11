@@ -2,20 +2,7 @@ import { Bandeja } from './Bandeja';
 import { Correo } from './Correo';
 
 export class BandejaEnviados extends Bandeja {
-  
-  constructor() {
-    super();
-  }
-
-  public override agregarCorreo(correo: Correo): void {
-    const existe = this.correos.some(c => c.id === correo.id);
-    
-    if (!existe) {
-      super.agregarCorreo(correo);
-    } else {
-      console.warn(`[Aviso] El correo con ID ${correo.id} ya se encuentra en la Bandeja de Enviados.`);
-    }
-  }
+  // agregarCorreo y el control de duplicados se heredan de Bandeja
 
   // Método específico: Buscar correos enviados por asunto
   public buscarPorAsunto(asunto: string): Correo[] {
