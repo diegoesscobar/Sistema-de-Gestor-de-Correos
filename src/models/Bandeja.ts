@@ -33,24 +33,3 @@ export abstract class Bandeja {
         return this.correos.filter(c => !c.leido);
     }
 }
-
-export class BandejaEntrada extends Bandeja {
-    // Acá se puede agregar reglas o métodos específicos de la bandeja de entrada más adelante
-}
-
-export class BandejaSalidas extends Bandeja {
-    // Reglas específicas para correos salientes
-}
-
-export class BandejaEnviados extends Bandeja {
-    // Reglas específicas para correos ya enviados
-}
-
-
-export class BandejaSpam extends Bandeja {
-    // Reglas específicas para correos marcados como spam
-}
-
-export class BandejaEliminados extends Bandeja {
-    // Correos retirados de su bandeja original, se pueden restaurar
-}
