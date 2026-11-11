@@ -2,7 +2,12 @@ import { Borrador } from './Borrador';
 import { BandejaBorradores } from './BandejaBorradores';
 import { Contacto } from './Contacto';
 import { Correo } from './Correo';
-import { Bandeja, BandejaEntrada, BandejaEnviados, BandejaEliminados } from './Bandeja';
+import { Bandeja } from './Bandeja';
+import { BandejaEntrada } from './BandejaEntrada';
+import { BandejaEnviados } from './BandejaEnviados';
+import { BandejaEliminados } from './BandejaEliminados';
+import { BandejaSpam } from './BandejaSpam';
+import { BandejaSalidas } from './BandejaSalidas';
 
 export class GestorCorreos {
     private _borradores: BandejaBorradores = new BandejaBorradores();
