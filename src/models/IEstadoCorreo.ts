@@ -1,10 +1,7 @@
-// TODO: Más adelante vamos a implementar el Patrón State acá.
-// Está ideal para cuando trabajás con múltiples estados (como leído/no leído o favorito).
-// Nos va a servir para evitar llenarnos de 'ifs' por todos lados a medida que escale el sistema, 
-// delegando el comportamiento a objetos con polimorfismo. 
-// Por ahora safamos el sprint de mañana con booleanos, pero después lo refactorizamos de una.
+// Patrón State: cada estado de lectura es un objeto que sabe a qué estado pasar.
+// Así el Correo no se llena de ifs, delega en el estado que tiene (polimorfismo).
 export interface IEstadoCorreo {
-    // isLeido(): boolean;
-    // marcarLeido(): IEstadoCorreo;
-    // marcarNoLeido(): IEstadoCorreo;
+    estaLeido(): boolean;
+    marcarLeido(): IEstadoCorreo;
+    marcarNoLeido(): IEstadoCorreo;
 }
