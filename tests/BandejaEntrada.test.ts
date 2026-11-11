@@ -1,11 +1,16 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { BandejaEntrada } from '../src/models/BandejaEntrada';
 import { Correo } from '../src/models/Correo';
 import { Contacto } from '../src/models/Contacto';
 
-describe('Estructura de Bandejas', () => {
-  const remitente = new Contacto('Juan', 'juan@test.com');
-  const destinatario = new Contacto('Maria', 'maria@test.com');
+describe('Pruebas unitarias: Bandeja de Entrada', () => {
+  let remitente: Contacto;
+  let destinatario: Contacto;
+
+  beforeEach(() => {
+    remitente = new Contacto('Juan', 'juan@test.com');
+    destinatario = new Contacto('Maria', 'maria@test.com');
+  });
 
   it('Debería permitir agregar un correo a la bandeja', () => {
     const bandeja = new BandejaEntrada();
@@ -17,17 +22,17 @@ describe('Estructura de Bandejas', () => {
     expect(bandeja.obtenerCorreos()[0].asunto).toBe('Hola');
   });
 
-  // it('Debería permitir eliminar un correo por su ID y retornarlo', () => {
-  //   const bandeja = new BandejaEntrada();
-  //   const correo = new Correo('1', 'Hola', 'Contenido', remitente, [destinatario]);
-  //   bandeja.agregarCorreo(correo);
+  it('Debería permitir eliminar un correo por su ID y retornarlo', () => {
+    const bandeja = new BandejaEntrada();
+    const correo = new Correo('1', 'Hola', 'Contenido', remitente, [destinatario]);
+    bandeja.agregarCorreo(correo);
 
-  //   const correoEliminado = bandeja.removerCorreo('1');
+    const correoEliminado = bandeja.removerCorreo('1');
 
-  //   expect(correoEliminado).toBeDefined();
-  //   expect(correoEliminado?.id).toBe('1');
-  //   expect(bandeja.obtenerCorreos()).toHaveLength(0);
-  // });
+    expect(correoEliminado).toBeDefined();
+    expect(correoEliminado?.id).toBe('1');
+    expect(bandeja.obtenerCorreos()).toHaveLength(0);
+  });
 
   it('No debería permitir agregar correos con el mismo ID (duplicados)', () => {
     const bandeja = new BandejaEntrada();
@@ -39,6 +44,25 @@ describe('Estructura de Bandejas', () => {
 
     expect(bandeja.obtenerCorreos()).toHaveLength(1);
     expect(bandeja.obtenerCorreos()[0].asunto).toBe('Asunto Original');
+  });
+
+  it('Debería permitir marcar un correo como leído a través de la bandeja', () => {
+    const bandeja = new BandejaEntrada();
+    const correo = new Correo('1', 'Hola', 'Texto', remitente, [destinatario]);
+    bandeja.agregarCorreo(correo);
+
+    bandeja.marcarComoLeido('1');
+    expect(bandeja.obtenerNoLeidos()).toHaveLength(0);
+  });
+
+  it('Debería buscar correos correctamente por el email del remitente', () => {
+    const bandeja = new BandejaEntrada();
+    const correo = new Correo('1', 'Hola', 'Texto', remitente, [destinatario]);
+    bandeja.agregarCorreo(correo);
+
+    const resultados = bandeja.buscarPorRemitente('juan@test.com');
+    expect(resultados).toHaveLength(1);
+    expect(resultados[0].id).toBe('1');
   });
 
   describe('RF-08: Correos no leídos', () => {
