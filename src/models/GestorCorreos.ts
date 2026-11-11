@@ -80,7 +80,7 @@ export class GestorCorreos {
     // Busca el correo en Entrada o Enviados, lo pasa a Eliminados y se acuerda de donde venía
     public eliminarCorreo(idCorreo: string): void {
         const bandejas: Bandeja[] = [this._entrada, this._enviados];
-        const origen = bandejas.find(b => b.obtenerCorreos().some(c => c.id === idCorreo));
+        const origen = bandejas.find(b => b.buscarPorId(idCorreo));
         if (!origen) {
             throw new Error('El correo no existe');
         }

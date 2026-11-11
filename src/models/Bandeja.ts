@@ -7,9 +7,14 @@ export abstract class Bandeja {
         this.correos = [];
     }
 
+    // Busca un correo por su id, si no está devuelve undefined
+    public buscarPorId(idCorreo: string): Correo | undefined {
+        return this.correos.find(c => c.id === idCorreo);
+    }
+
     // Método común para agregar un correo a la bandeja
     public agregarCorreo(correo: Correo): void {
-        if (!this.correos.some(c => c.id === correo.id)) {
+        if (!this.buscarPorId(correo.id)) {
             this.correos.push(correo);
         }
     }
