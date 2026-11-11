@@ -91,4 +91,23 @@ describe('Pruebas unitarias: Bandeja de Entrada', () => {
       expect(bandeja.obtenerNoLeidos()).toHaveLength(1);
     });
   });
+
+  describe('Búsquedas heredadas de Bandeja', () => {
+    it('Debería buscar por asunto sin importar mayúsculas', () => {
+      const bandeja = new BandejaEntrada();
+      bandeja.agregarCorreo(new Correo('1', 'Examen Final', 'Texto', remitente, [destinatario]));
+      bandeja.agregarCorreo(new Correo('2', 'Otro tema', 'Texto', remitente, [destinatario]));
+
+      expect(bandeja.buscarPorAsunto('examen')).toHaveLength(1);
+    });
+
+    it('Debería buscar por nombre o email del destinatario', () => {
+      const bandeja = new BandejaEntrada();
+      bandeja.agregarCorreo(new Correo('1', 'Hola', 'Texto', remitente, [destinatario]));
+
+      expect(bandeja.buscarPorDestinatario('MARIA')).toHaveLength(1);
+      expect(bandeja.buscarPorDestinatario('maria@test')).toHaveLength(1);
+      expect(bandeja.buscarPorDestinatario('pedro')).toHaveLength(0);
+    });
+  });
 });
