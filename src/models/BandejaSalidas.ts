@@ -7,19 +7,31 @@ export class BandejaSalidas extends Bandeja {
     super();
   }
 
-  // Sobrescribimos el método agregarCorreo adaptándolo a las salidas
-  public agregarCorreo(correo: Correo): void {
-    // Validamos que no exista un correo con el mismo ID en la bandeja de salidas
+  public override agregarCorreo(correo: Correo): void {
     const existe = this.correos.some(c => c.id === correo.id);
     
     if (!existe) {
-      // Reutilizamos el método original del padre para agregar el correo de salida
       super.agregarCorreo(correo);
     } else {
-      console.warn(`[Aviso] El correo de salida con ID ${correo.id} ya se encuentra registrado.`);
+      console.warn(`[Aviso] El correo con ID ${correo.id} ya se encuentra en la Bandeja de Salidas.`);
     }
   }
 
-  // Los demás métodos de remover, obtener todos y filtrar los no leídos 
-  // se heredan automáticamente de Bandeja.
+  // Método específico: Buscar correos salientes por destinatario
+  public buscarPorDestinatario(destinatarioBuscado: string): Correo[] {
+    const textoBuscado = destinatarioBuscado.toLowerCase().trim();
+    
+    return this.correos.filter(correo => 
+      correo.destinatarios.some(d => 
+        d.nombre.toLowerCase().includes(textoBuscado) || 
+        d.email.toLowerCase().includes(textoBuscado)
+      )
+    );
+  }
+
+  // Método específico: Buscar correos salientes por asunto
+  public buscarPorAsunto(asunto: string): Correo[] {
+    const asuntoBuscado = asunto.toLowerCase().trim();
+    return this.correos.filter(c => c.asunto.toLowerCase().includes(asuntoBuscado));
+  }
 }
