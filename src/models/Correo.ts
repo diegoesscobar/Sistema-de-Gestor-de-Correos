@@ -2,11 +2,13 @@ import { Contacto } from './Contacto';
 import { VerificadorDeCorreo } from './VerificadordeCorreo';
 import { IEstadoCorreo } from './IEstadoCorreo';
 import { EstadoNoLeido } from './EstadoNoLeido';
+import { IEstadoFavorito } from './IEstadoFavorito';
+import { EstadoNoFavorito } from './EstadoNoFavorito';
 
 export class Correo {
   private _destinatarios: Contacto[];
   private _estado: IEstadoCorreo = new EstadoNoLeido(); // todo correo arranca sin leer
-  private _favorito: boolean = false;
+  private _estadoFavorito: IEstadoFavorito = new EstadoNoFavorito(); // y sin ser favorito
 
   constructor(
     public readonly id: string,
@@ -37,7 +39,7 @@ export class Correo {
   }
 
   public get favorito(): boolean {
-    return this._favorito;
+    return this._estadoFavorito.esFavorito();
   }
 
   // El estado decide a cuál pasar, el correo solo guarda el nuevo
@@ -50,6 +52,6 @@ export class Correo {
   }
 
   public alternarFavorito(): void {
-    this._favorito = !this._favorito;
+    this._estadoFavorito = this._estadoFavorito.alternar();
   }
 }
