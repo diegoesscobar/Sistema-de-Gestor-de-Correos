@@ -1,5 +1,4 @@
 import { Contacto } from './Contacto';
-import { VerificadorDeCorreo } from './VerificadordeCorreo';
 import { IEstadoCorreo } from './IEstadoCorreo';
 import { EstadoNoLeido } from './EstadoNoLeido';
 import { IEstadoFavorito } from './IEstadoFavorito';
@@ -21,11 +20,7 @@ export class Correo {
       throw new Error('Faltan datos obligatorios');
     }
 
-    // Separación de responsabilidades: Validamos el formato del email usando la clase externa
-    if (!VerificadorDeCorreo.validar(remitente.email)) {
-      throw new Error('El correo electrónico del remitente no tiene un formato válido');
-    }
-
+    // El email del remitente no se vuelve a validar: un Contacto no se puede crear con email inválido
     this._destinatarios = [...destinatarios]; // Copia inicial
   }
 

@@ -1,3 +1,5 @@
+import { VerificadorDeCorreo } from './VerificadordeCorreo';
+
 export class Contacto {
   private _nombre: string = '';
   private _email: string = '';
@@ -22,14 +24,10 @@ export class Contacto {
     return this._email;
   }
   public set email(nuevoEmail: string) {
-    this.validarEmail(nuevoEmail);
-    this._email = nuevoEmail.toLowerCase().trim(); //lo pasa a minusculas y le quita los espacios
-  }
-  // para que el string del user tenga un usuario,@,un dominio y un .com
-  private validarEmail(email: string): void {
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!regex.test(email)) {
+    // El formato lo valida el VerificadorDeCorreo, asi la regex esta en un solo lugar
+    if (!VerificadorDeCorreo.validar(nuevoEmail)) {
       throw new Error('Dirección de correo no es válido');
     }
+    this._email = nuevoEmail.toLowerCase().trim(); //lo pasa a minusculas y le quita los espacios
   }
 }
