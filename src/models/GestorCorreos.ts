@@ -6,8 +6,6 @@ import { Bandeja } from './Bandeja';
 import { BandejaEntrada } from './BandejaEntrada';
 import { BandejaEnviados } from './BandejaEnviados';
 import { BandejaEliminados } from './BandejaEliminados';
-import { BandejaSpam } from './BandejaSpam';
-import { BandejaSalidas } from './BandejaSalidas';
 
 export class GestorCorreos {
     private _borradores: BandejaBorradores = new BandejaBorradores();
@@ -25,16 +23,18 @@ export class GestorCorreos {
         return borrador;
     }
 
-    // Cada edición queda guardada en el borrador (simula el guardado automático)
-    public editarBorrador(idBorrador: string, asunto?: string, contenido?: string, remitente?: Contacto, destinatarios?: Contacto[]): void {
+    // Busca el borrador y si no está corta con error, asi no se repite en cada método
+    private buscarBorradorOError(idBorrador: string): Borrador {
         const borrador = this._borradores.obtenerBorrador(idBorrador);
         if (!borrador) {
             throw new Error('El borrador no existe');
         }
-        if (asunto !== undefined) borrador.asunto = asunto;
-        if (contenido !== undefined) borrador.contenido = contenido;
-        if (remitente !== undefined) borrador.remitente = remitente;
-        if (destinatarios !== undefined) borrador.destinatarios = [...destinatarios];
+        return borrador;
+    }
+
+    // Cada edición queda guardada en el borrador (simula el guardado automático)
+    public editarBorrador(idBorrador: string, asunto?: string, contenido?: string, remitente?: Contacto, destinatarios?: Contacto[]): void {
+        this.buscarBorradorOError(idBorrador).editar(asunto, contenido, remitente, destinatarios);
     }
 
     public obtenerBorrador(idBorrador: string): Borrador | undefined {
@@ -47,10 +47,7 @@ export class GestorCorreos {
 
     // RF-02: el borrador válido se convierte en Correo, sale de Borradores y pasa a Enviados
     public enviarBorrador(idBorrador: string): Correo {
-        const borrador = this._borradores.obtenerBorrador(idBorrador);
-        if (!borrador) {
-            throw new Error('El borrador no existe');
-        }
+        const borrador = this.buscarBorradorOError(idBorrador);
         if (!borrador.esValidoParaEnviar()) {
             throw new Error('El borrador no está completo para enviarse');
         }

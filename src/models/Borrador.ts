@@ -9,6 +9,14 @@ export class Borrador {
         public destinatarios: Contacto[] = []
     ) { }
 
+    // El borrador cambia sus propios datos, solo los que le pasen
+    public editar(asunto?: string, contenido?: string, remitente?: Contacto, destinatarios?: Contacto[]): void {
+        if (asunto !== undefined) this.asunto = asunto;
+        if (contenido !== undefined) this.contenido = contenido;
+        if (remitente !== undefined) this.remitente = remitente;
+        if (destinatarios !== undefined) this.destinatarios = [...destinatarios];
+    }
+
     // El borrador puede estar incompleto, pero para enviarlo necesita remitente, asunto, contenido y al menos un destinatario
     public esValidoParaEnviar(): boolean {
         if (!this.remitente || this.asunto.trim().length === 0) {
