@@ -7,19 +7,31 @@ export class BandejaEnviados extends Bandeja {
     super();
   }
 
-  // Sobrescribimos el método agregarCorreo aplicando control de unicidad para enviados
-  public agregarCorreo(correo: Correo): void {
-    // Validamos si ya existe un correo con el mismo ID en la bandeja de enviados
+  public override agregarCorreo(correo: Correo): void {
     const existe = this.correos.some(c => c.id === correo.id);
     
     if (!existe) {
-      // Si no existe, reutilizamos la lógica del padre para agregarlo
       super.agregarCorreo(correo);
     } else {
-      console.warn(`[Aviso] El correo enviado con ID ${correo.id} ya se encuentra registrado.`);
+      console.warn(`[Aviso] El correo con ID ${correo.id} ya se encuentra en la Bandeja de Enviados.`);
     }
   }
 
-  // Los métodos de removerCorreo, obtenerCorreos y obtenerNoLeidos 
-  // ya se heredan de Bandeja como pasa en los demás.
+  // Método específico: Buscar correos enviados por asunto
+  public buscarPorAsunto(asunto: string): Correo[] {
+    const asuntoBuscado = asunto.toLowerCase().trim();
+    return this.correos.filter(c => c.asunto.toLowerCase().includes(asuntoBuscado));
+  }
+
+  // Método específico: Buscar correos enviados por destinatario
+  public buscarPorDestinatario(destinatarioBuscado: string): Correo[] {
+    const textoBuscado = destinatarioBuscado.toLowerCase().trim();
+    
+    return this.correos.filter(correo => 
+      correo.destinatarios.some(d => 
+        d.nombre.toLowerCase().includes(textoBuscado) || 
+        d.email.toLowerCase().includes(textoBuscado)
+      )
+    );
+  }
 }
