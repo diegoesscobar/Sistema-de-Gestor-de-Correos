@@ -1,12 +1,12 @@
 import { Contacto } from './Contacto';
-import { IEstadoCorreo } from './IEstadoCorreo';
+import { IEstadoLectura } from './IEstadoLectura';
 import { EstadoNoLeido } from './EstadoNoLeido';
 import { IEstadoFavorito } from './IEstadoFavorito';
 import { EstadoNoFavorito } from './EstadoNoFavorito';
 
 export class Correo {
   private _destinatarios: Contacto[];
-  private _estado: IEstadoCorreo = new EstadoNoLeido(); // todo correo arranca sin leer
+  private _estadoLectura: IEstadoLectura = new EstadoNoLeido(); // todo correo arranca sin leer
   private _estadoFavorito: IEstadoFavorito = new EstadoNoFavorito(); // y sin ser favorito
 
   constructor(
@@ -30,7 +30,7 @@ export class Correo {
   }
 
   public get leido(): boolean {
-    return this._estado.estaLeido();
+    return this._estadoLectura.estaLeido();
   }
 
   public get favorito(): boolean {
@@ -39,11 +39,11 @@ export class Correo {
 
   // El estado decide a cuál pasar, el correo solo guarda el nuevo
   public marcarComoLeido(): void {
-    this._estado = this._estado.marcarLeido();
+    this._estadoLectura = this._estadoLectura.marcarLeido();
   }
 
   public marcarComoNoLeido(): void {
-    this._estado = this._estado.marcarNoLeido();
+    this._estadoLectura = this._estadoLectura.marcarNoLeido();
   }
 
   public alternarFavorito(): void {

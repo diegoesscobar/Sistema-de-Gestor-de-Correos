@@ -1,17 +1,17 @@
-import { IEstadoCorreo } from './IEstadoCorreo';
+import { IEstadoLectura } from './IEstadoLectura';
 import { EstadoLeido } from './EstadoLeido';
 
-export class EstadoNoLeido implements IEstadoCorreo {
+export class EstadoNoLeido implements IEstadoLectura {
     public estaLeido(): boolean {
         return false;
     }
 
-    public marcarLeido(): IEstadoCorreo {
+    public marcarLeido(): IEstadoLectura {
         return new EstadoLeido();
     }
 
     // Ya está como no leído, se queda igual
-    public marcarNoLeido(): IEstadoCorreo {
+    public marcarNoLeido(): IEstadoLectura {
         return this;
     }
 }
