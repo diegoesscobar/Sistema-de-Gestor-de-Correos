@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { BandejaEntrada } from '../src/models/Bandeja';
+import { BandejaEntrada } from '../src/models/BandejaEntrada';
 import { Correo } from '../src/models/Correo';
 import { Contacto } from '../src/models/Contacto';
 
