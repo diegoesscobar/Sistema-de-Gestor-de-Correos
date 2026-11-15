@@ -18,4 +18,17 @@ export class EstadisticasCorreos {
     public filtrar(condicion: Predicado<Correo>): Correo[] {
         return this._correos.filter(condicion);
     }
+
+    // reduce: recorre todos y acumula un solo número
+    public contarNoLeidos(): number {
+        return this._correos.reduce((total, correo) => total + (correo.leido ? 0 : 1), 0);
+    }
+
+    // reduce que acumula un map: email del remitente -> cuántos correos mandó
+    public contarPorRemitente(): Map<string, number> {
+        return this._correos.reduce((conteo, correo) => {
+            const email = correo.remitente.email;
+            return conteo.set(email, (conteo.get(email) ?? 0) + 1);
+        }, new Map<string, number>());
+    }
 }

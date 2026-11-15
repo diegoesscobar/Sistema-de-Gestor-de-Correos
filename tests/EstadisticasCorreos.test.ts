@@ -19,4 +19,13 @@ describe('RF-10: Procesamiento funcional y estadísticas', () => {
         tp.marcarComoLeido();
         expect(new EstadisticasCorreos([examen, tp]).filtrar(noLeido)).toEqual([examen]);
     });
+
+    it('contarNoLeidos() y contarPorRemitente() acumulan con reduce', () => {
+        const respuesta = new Correo('3', 'Re: TP', 'Listo', yo, [profe]);
+        const estadisticas = new EstadisticasCorreos([examen, tp, respuesta]);
+
+        expect(estadisticas.contarNoLeidos()).toBe(2);
+        expect(estadisticas.contarPorRemitente().get('profe@ucp.edu.ar')).toBe(2);
+        expect(estadisticas.contarPorRemitente().get('gabi@ucp.edu.ar')).toBe(1);
+    });
 });
