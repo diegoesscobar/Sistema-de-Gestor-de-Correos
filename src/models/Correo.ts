@@ -3,8 +3,9 @@ import { IEstadoLectura } from './IEstadoLectura';
 import { EstadoNoLeido } from './EstadoNoLeido';
 import { IEstadoFavorito } from './IEstadoFavorito';
 import { EstadoNoFavorito } from './EstadoNoFavorito';
+import { IIdentificable } from './IIdentificable';
 
-export class Correo {
+export class Correo implements IIdentificable {
   private _destinatarios: Contacto[];
   private _estadoLectura: IEstadoLectura = new EstadoNoLeido(); // todo correo arranca sin leer
   private _estadoFavorito: IEstadoFavorito = new EstadoNoFavorito(); // y sin ser favorito

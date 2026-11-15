@@ -1,6 +1,7 @@
 import { Contacto } from './Contacto';
+import { IIdentificable } from './IIdentificable';
 
-export class Borrador {
+export class Borrador implements IIdentificable {
     constructor(
         public id: string,
         public asunto: string = '',
