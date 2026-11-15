@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { Buzon } from '../src/models/Buzon';
 import { Contacto } from '../src/models/Contacto';
 import { Correo } from '../src/models/Correo';
+import { GeneradorIdSecuencial } from '../src/models/GeneradorIdSecuencial';
 
 describe('Buzon', () => {
     const remitente = new Contacto('Gabi', 'gabi@ucp.edu.ar');
@@ -14,6 +15,14 @@ describe('Buzon', () => {
 
             expect(gestor.obtenerBorradores()).toHaveLength(1);
             expect(borrador.esValidoParaEnviar()).toBe(false);
+        });
+
+        it('Dos buzones con el mismo generador no repiten ids de borrador', () => {
+            const generador = new GeneradorIdSecuencial();
+            const buzon1 = new Buzon(generador);
+            const buzon2 = new Buzon(generador);
+
+            expect(buzon1.crearBorrador().id).not.toBe(buzon2.crearBorrador().id);
         });
 
         it('Debería conservar los cambios al editar y recuperar el borrador', () => {

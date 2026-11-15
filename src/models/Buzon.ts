@@ -6,6 +6,8 @@ import { BandejaCorreos } from './BandejaCorreos';
 import { BandejaEntrada } from './BandejaEntrada';
 import { BandejaEnviados } from './BandejaEnviados';
 import { BandejaEliminados } from './BandejaEliminados';
+import { IGeneradorId } from './IGeneradorId';
+import { GeneradorIdSecuencial } from './GeneradorIdSecuencial';
 
 // Las bandejas de UN usuario. Repartir correos entre usuarios lo hace el GestorCorreos
 export class Buzon {
@@ -13,12 +15,13 @@ export class Buzon {
     private _entrada: BandejaEntrada = new BandejaEntrada();
     private _enviados: BandejaEnviados = new BandejaEnviados();
     private _eliminados: BandejaEliminados = new BandejaEliminados();
-    private _contadorBorradores: number = 0;
+
+    // El gestor le pasa a todos los buzones el mismo generador, asi los ids no se repiten entre usuarios
+    constructor(private readonly _generadorIds: IGeneradorId = new GeneradorIdSecuencial()) { }
 
     // Al empezar a redactar se registra un borrador vacío con un id propio
     public crearBorrador(): Borrador {
-        this._contadorBorradores++;
-        const borrador = new Borrador('b' + this._contadorBorradores);
+        const borrador = new Borrador(this._generadorIds.siguiente());
         this._borradores.agregarCorreo(borrador);
         return borrador;
     }
