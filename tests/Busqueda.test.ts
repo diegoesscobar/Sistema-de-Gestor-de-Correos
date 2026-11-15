@@ -20,4 +20,23 @@ describe('RF-04: Búsqueda en la Bandeja de Entrada', () => {
         expect(buzon.buscarEnEntrada('martinez')).toEqual([examen, asado]); // remitente en uno, destinatario en el otro
         expect(buzon.buscarEnEntrada('gmail')).toEqual([asado]);
     });
+
+    it('Un correo aparece una sola vez aunque coincida en varios campos, y no se modifica', () => {
+        const buzon = new Buzon();
+        buzon.recibirCorreo(new Correo('1', 'Examen UCP', 'Examen en la ucp', profe, [yo]));
+
+        const resultado = buzon.buscarEnEntrada('ucp');
+
+        expect(resultado).toHaveLength(1);
+        expect(resultado[0].asunto).toBe('Examen UCP');
+        expect(resultado[0].leido).toBe(false);
+    });
+
+    it('Devuelve vacío si no hay coincidencias o la bandeja está vacía', () => {
+        const buzon = new Buzon();
+        expect(buzon.buscarEnEntrada('algo')).toEqual([]);
+
+        buzon.recibirCorreo(new Correo('1', 'Examen', 'Temario', profe, [yo]));
+        expect(buzon.buscarEnEntrada('vacaciones')).toEqual([]);
+    });
 });
