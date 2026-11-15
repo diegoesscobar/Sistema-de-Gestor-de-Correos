@@ -68,36 +68,43 @@ describe('GestorCorreos', () => {
         // });
     });
 
-    // describe('Eliminar correos', () => {
-    //     it('Debería pasar el correo de Entrada a Eliminados sin duplicarlo', () => {
-    //         const gestor = new GestorCorreos();
-    //         gestor.recibirCorreo(new Correo('1', 'Hola', 'Texto', dest1, [remitente]));
+    describe('Eliminar correos', () => {
+        it('Debería pasar el correo de Entrada a Eliminados sin duplicarlo', () => {
+            const gestor = new GestorCorreos();
+            gestor.recibirCorreo(new Correo('1', 'Hola', 'Texto', dest1, [remitente]));
 
-    //         gestor.eliminarCorreo('1');
+            gestor.eliminarCorreo('1');
 
-    //         expect(gestor.obtenerEntrada()).toHaveLength(0);
-    //         expect(gestor.obtenerEliminados()).toHaveLength(1);
-    //     });
+            expect(gestor.obtenerEntrada()).toHaveLength(0);
+            expect(gestor.obtenerEliminados()).toHaveLength(1);
+        });
 
-    //     it('Debería restaurar el correo a su bandeja de origen', () => {
-    //         const gestor = new GestorCorreos();
-    //         const borrador = gestor.crearBorrador();
-    //         gestor.editarBorrador(borrador.id, 'TP', 'Cuerpo', remitente, [dest1]);
-    //         gestor.enviarBorrador(borrador.id);
+        it('Debería restaurar el correo a su bandeja de origen', () => {
+            const gestor = new GestorCorreos();
+            const borrador = gestor.crearBorrador();
+            gestor.editarBorrador(borrador.id, 'TP', 'Cuerpo', remitente, [dest1]);
+            gestor.enviarBorrador(borrador.id);
 
-    //         gestor.eliminarCorreo(borrador.id);
-    //         gestor.restaurarCorreo(borrador.id);
+            gestor.eliminarCorreo(borrador.id);
+            gestor.restaurarCorreo(borrador.id);
 
-    //         expect(gestor.obtenerEnviados()).toHaveLength(1);
-    //         expect(gestor.obtenerEntrada()).toHaveLength(0);
-    //         expect(gestor.obtenerEliminados()).toHaveLength(0);
-    //     });
+            expect(gestor.obtenerEnviados()).toHaveLength(1);
+            expect(gestor.obtenerEntrada()).toHaveLength(0);
+            expect(gestor.obtenerEliminados()).toHaveLength(0);
+        });
 
-    //     it('Debería lanzar error al restaurar un correo que no está en Eliminados', () => {
-    //         const gestor = new GestorCorreos();
-    //         expect(() => gestor.restaurarCorreo('x')).toThrow('El correo no está en Eliminados');
-    //     });
-    // });
+        it('Debería lanzar error al restaurar un correo que no está en Eliminados', () => {
+            const gestor = new GestorCorreos();
+            expect(() => gestor.restaurarCorreo('x')).toThrow('El correo no está en Eliminados');
+        });
+
+        it('No debería poder eliminar un correo que ya está en Eliminados', () => {
+            const gestor = new GestorCorreos();
+            gestor.recibirCorreo(new Correo('1', 'Hola', 'Texto', dest1, [remitente]));
+            gestor.eliminarCorreo('1');
+            expect(() => gestor.eliminarCorreo('1')).toThrow('El correo no existe');
+        });
+    });
 
     describe('RF-09: Vista de favoritos', () => {
         it('Debería juntar los favoritos de Entrada y Enviados sin moverlos', () => {

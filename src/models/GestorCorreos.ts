@@ -12,7 +12,6 @@ export class GestorCorreos {
     private _entrada: BandejaEntrada = new BandejaEntrada();
     private _enviados: BandejaEnviados = new BandejaEnviados();
     private _eliminados: BandejaEliminados = new BandejaEliminados();
-    private _origenes: Map<string, BandejaCorreos> = new Map(); // id del correo -> bandeja de donde salió
     private _contadorBorradores: number = 0;
 
     // Al empezar a redactar se registra un borrador vacío con un id propio
@@ -74,27 +73,16 @@ export class GestorCorreos {
         return this._eliminados.obtenerCorreos();
     }
 
-    // Busca el correo en Entrada o Enviados, lo pasa a Eliminados y se acuerda de donde venía
+    // El gestor solo encuentra en qué bandeja está, el movimiento lo coordina la papelera
     public eliminarCorreo(idCorreo: string): void {
         const bandejas: BandejaCorreos[] = [this._entrada, this._enviados];
-        const origen = bandejas.find(b => b.buscarPorId(idCorreo));
-        if (!origen) {
-            throw new Error('El correo no existe');
-        }
-        const correo = origen.removerCorreo(idCorreo)!;
-        this._eliminados.agregarCorreo(correo);
-        this._origenes.set(idCorreo, origen);
+        // si no está en ninguna, la papelera no lo encuentra en Entrada y tira el error
+        const origen = bandejas.find(b => b.buscarPorId(idCorreo)) ?? this._entrada;
+        this._eliminados.recibirDesde(origen, idCorreo);
     }
 
-    // Devuelve el correo eliminado a la bandeja de donde había salido
     public restaurarCorreo(idCorreo: string): void {
-        const origen = this._origenes.get(idCorreo);
-        const correo = this._eliminados.removerCorreo(idCorreo);
-        if (!correo || !origen) {
-            throw new Error('El correo no está en Eliminados');
-        }
-        origen.agregarCorreo(correo);
-        this._origenes.delete(idCorreo);
+        this._eliminados.restaurar(idCorreo);
     }
 
     // RF-09: vista de favoritos de todas las bandejas menos Eliminados, sin mover los correos
