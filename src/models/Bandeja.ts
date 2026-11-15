@@ -4,6 +4,9 @@ import { IIdentificable } from './IIdentificable';
 export abstract class Bandeja<T extends IIdentificable> {
     protected correos: T[];
 
+    // Cada bandeja hija está obligada a decir cómo se llama
+    public abstract readonly nombre: string;
+
     constructor() {
         this.correos = [];
     }
