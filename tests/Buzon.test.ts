@@ -3,6 +3,8 @@ import { Buzon } from '../src/models/Buzon';
 import { Contacto } from '../src/models/Contacto';
 import { Correo } from '../src/models/Correo';
 import { GeneradorIdSecuencial } from '../src/models/GeneradorIdSecuencial';
+import { Filtro } from '../src/models/Filtro';
+import { asuntoContiene } from '../src/models/PredicadosCorreo';
 
 describe('Buzon', () => {
     const remitente = new Contacto('Gabi', 'gabi@ucp.edu.ar');
@@ -145,6 +147,27 @@ describe('Buzon', () => {
 
             gestor.restaurarCorreo('1');
             expect(gestor.obtenerFavoritos()).toHaveLength(1);
+        });
+    });
+
+    describe('RF-05 y RF-09: Filtros del usuario', () => {
+        it('El mismo filtro se aplica a Entrada, Enviados y a la vista de favoritos', () => {
+            const gestor = new Buzon();
+            const recibido = new Correo('1', 'Examen', 'Texto', dest1, [remitente]);
+            gestor.recibirCorreo(recibido);
+            gestor.recibirCorreo(new Correo('2', 'Asado', 'Texto', dest1, [remitente]));
+            const borrador = gestor.crearBorrador();
+            gestor.editarBorrador(borrador.id, 'Examen final', 'Cuerpo', remitente, [dest1]);
+            gestor.enviarBorrador(borrador.id);
+            gestor.registrarFiltro(new Filtro('Examenes', asuntoContiene('examen')));
+
+            expect(gestor.aplicarFiltro('Examenes', gestor.obtenerEntrada())).toHaveLength(1);
+            expect(gestor.aplicarFiltro('Examenes', gestor.obtenerEnviados())).toHaveLength(1);
+            expect(gestor.aplicarFiltro('Examenes', gestor.obtenerFavoritos())).toHaveLength(0);
+
+            recibido.alternarFavorito(); // el cambio se ve sin volver a guardar nada
+            expect(gestor.aplicarFiltro('Examenes', gestor.obtenerFavoritos())).toEqual([recibido]);
+            expect(() => gestor.aplicarFiltro('Otro', [])).toThrow('No existe un filtro con ese nombre');
         });
     });
 });

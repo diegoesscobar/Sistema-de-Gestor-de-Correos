@@ -8,6 +8,8 @@ import { BandejaEnviados } from './BandejaEnviados';
 import { BandejaEliminados } from './BandejaEliminados';
 import { IGeneradorId } from './IGeneradorId';
 import { GeneradorIdSecuencial } from './GeneradorIdSecuencial';
+import { IFiltro } from './IFiltro';
+import { RegistroFiltros } from './RegistroFiltros';
 
 // Las bandejas de UN usuario. Repartir correos entre usuarios lo hace el GestorCorreos
 export class Buzon {
@@ -15,6 +17,7 @@ export class Buzon {
     private _entrada: BandejaEntrada = new BandejaEntrada();
     private _enviados: BandejaEnviados = new BandejaEnviados();
     private _eliminados: BandejaEliminados = new BandejaEliminados();
+    private _filtros: RegistroFiltros = new RegistroFiltros();
 
     // El gestor le pasa a todos los buzones el mismo generador, asi los ids no se repiten entre usuarios
     constructor(private readonly _generadorIds: IGeneradorId = new GeneradorIdSecuencial()) { }
@@ -99,5 +102,18 @@ export class Buzon {
             .filter(b => b.incluyeEnFavoritos())
             .flatMap(b => b.obtenerCorreos())
             .filter(c => c.favorito);
+    }
+
+    // RF-05: los filtros son de cada usuario y se pueden aplicar sobre cualquier bandeja o vista
+    public registrarFiltro(filtro: IFiltro): void {
+        this._filtros.registrar(filtro);
+    }
+
+    public aplicarFiltro(nombreFiltro: string, correos: ReadonlyArray<Correo>): Correo[] {
+        const filtro = this._filtros.obtener(nombreFiltro);
+        if (!filtro) {
+            throw new Error('No existe un filtro con ese nombre');
+        }
+        return filtro.aplicar(correos);
     }
 }
