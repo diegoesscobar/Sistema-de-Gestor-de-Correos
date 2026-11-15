@@ -76,8 +76,10 @@ export class GestorCorreos {
     // El gestor solo encuentra en qué bandeja está, el movimiento lo coordina la papelera
     public eliminarCorreo(idCorreo: string): void {
         const bandejas: BandejaCorreos[] = [this._entrada, this._enviados];
-        // si no está en ninguna, la papelera no lo encuentra en Entrada y tira el error
-        const origen = bandejas.find(b => b.buscarPorId(idCorreo)) ?? this._entrada;
+        const origen = bandejas.find(b => b.buscarPorId(idCorreo));
+        if (!origen) {
+            throw new Error('El correo no existe');
+        }
         this._eliminados.recibirDesde(origen, idCorreo);
     }
 
