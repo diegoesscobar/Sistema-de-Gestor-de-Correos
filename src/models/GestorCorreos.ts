@@ -1,5 +1,6 @@
 import { Buzon } from './Buzon';
 import { Contacto } from './Contacto';
+import { Correo } from './Correo';
 import { IGeneradorId } from './IGeneradorId';
 import { GeneradorIdSecuencial } from './GeneradorIdSecuencial';
 
@@ -24,5 +25,14 @@ export class GestorCorreos {
             throw new Error('El usuario no está registrado');
         }
         return buzon;
+    }
+
+    // RF-02: el remitente lo guarda en sus Enviados y cada destinatario registrado recibe su propia copia
+    public enviar(emailRemitente: string, idBorrador: string): Correo {
+        const correo = this.buzonDe(emailRemitente).enviarBorrador(idBorrador);
+        correo.destinatarios
+            .filter(destinatario => this._buzones.has(destinatario.email))
+            .forEach(destinatario => this.buzonDe(destinatario.email).recibirCorreo(correo.copiar()));
+        return correo;
     }
 }
