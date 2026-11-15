@@ -23,5 +23,5 @@ jobs:
       - name: Compilar con TypeScript
         run: npx tsc -p .
 
-      - name: Correr los tests
-        run: npx vitest run
+      - name: Correr los tests con cobertura
+        run: npx vitest run --coverage
