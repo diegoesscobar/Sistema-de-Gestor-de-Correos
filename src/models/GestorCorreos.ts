@@ -87,7 +87,11 @@ export class GestorCorreos {
 
     // RF-09: vista de favoritos de todas las bandejas menos Eliminados, sin mover los correos
     public obtenerFavoritos(): Correo[] {
-        const correos = [...this._entrada.obtenerCorreos(), ...this._enviados.obtenerCorreos()];
-        return correos.filter(c => c.favorito);
+        // No pregunta cuál es la papelera: cada bandeja responde si entra en la vista (polimorfismo)
+        const bandejas: BandejaCorreos[] = [this._entrada, this._enviados, this._eliminados];
+        return bandejas
+            .filter(b => b.incluyeEnFavoritos())
+            .flatMap(b => b.obtenerCorreos())
+            .filter(c => c.favorito);
     }
 }

@@ -3,6 +3,11 @@ import { Correo } from './Correo';
 
 // Las bandejas de correos ya enviados o recibidos: lo que solo tiene sentido con un Correo completo
 export abstract class BandejaCorreos extends Bandeja<Correo> {
+    // RF-09: por defecto los favoritos de la bandeja se ven en la vista de favoritos
+    public incluyeEnFavoritos(): boolean {
+        return true;
+    }
+
     // RF-08: filter devuelve un array nuevo, asi que no se toca la bandeja original
     public obtenerNoLeidos(): Correo[] {
         return this.correos.filter(c => !c.leido);

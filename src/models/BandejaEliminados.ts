@@ -4,6 +4,11 @@ export class BandejaEliminados extends BandejaCorreos {
   public readonly nombre = 'Eliminados';
   private readonly origenes = new Map<string, BandejaCorreos>(); // id del correo -> bandeja de donde salió
 
+  // Los eliminados no se ven en favoritos hasta restaurarlos, pero conservan el indicador
+  public override incluyeEnFavoritos(): boolean {
+    return false;
+  }
+
   // La papelera coordina el movimiento: saca el correo de su bandeja y se acuerda de dónde venía
   public recibirDesde(origen: BandejaCorreos, idCorreo: string): void {
     const correo = origen.removerCorreo(idCorreo);

@@ -124,18 +124,18 @@ describe('GestorCorreos', () => {
             expect(gestor.obtenerEnviados()).toHaveLength(1);
         });
 
-        // it('Un favorito eliminado no aparece hasta restaurarlo y conserva su indicador', () => {
-        //     const gestor = new GestorCorreos();
-        //     const correo = new Correo('1', 'Hola', 'Texto', dest1, [remitente]);
-        //     gestor.recibirCorreo(correo);
-        //     correo.alternarFavorito();
+        it('Un favorito eliminado no aparece hasta restaurarlo y conserva su indicador', () => {
+            const gestor = new GestorCorreos();
+            const correo = new Correo('1', 'Hola', 'Texto', dest1, [remitente]);
+            gestor.recibirCorreo(correo);
+            correo.alternarFavorito();
 
-        //     gestor.eliminarCorreo('1');
-        //     expect(gestor.obtenerFavoritos()).toHaveLength(0);
-        //     expect(gestor.obtenerEliminados()[0].favorito).toBe(true);
+            gestor.eliminarCorreo('1');
+            expect(gestor.obtenerFavoritos()).toHaveLength(0);
+            expect(gestor.obtenerEliminados()[0].favorito).toBe(true);
 
-        //     gestor.restaurarCorreo('1');
-        //     expect(gestor.obtenerFavoritos()).toHaveLength(1);
-        // });
+            gestor.restaurarCorreo('1');
+            expect(gestor.obtenerFavoritos()).toHaveLength(1);
+        });
     });
 });
