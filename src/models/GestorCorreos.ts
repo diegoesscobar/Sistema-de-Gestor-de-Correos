@@ -2,7 +2,7 @@ import { Borrador } from './Borrador';
 import { BandejaBorradores } from './BandejaBorradores';
 import { Contacto } from './Contacto';
 import { Correo } from './Correo';
-import { Bandeja } from './Bandeja';
+import { BandejaCorreos } from './BandejaCorreos';
 import { BandejaEntrada } from './BandejaEntrada';
 import { BandejaEnviados } from './BandejaEnviados';
 import { BandejaEliminados } from './BandejaEliminados';
@@ -12,7 +12,7 @@ export class GestorCorreos {
     private _entrada: BandejaEntrada = new BandejaEntrada();
     private _enviados: BandejaEnviados = new BandejaEnviados();
     private _eliminados: BandejaEliminados = new BandejaEliminados();
-    private _origenes: Map<string, Bandeja> = new Map(); // id del correo -> bandeja de donde salió
+    private _origenes: Map<string, BandejaCorreos> = new Map(); // id del correo -> bandeja de donde salió
     private _contadorBorradores: number = 0;
 
     // Al empezar a redactar se registra un borrador vacío con un id propio
@@ -76,7 +76,7 @@ export class GestorCorreos {
 
     // Busca el correo en Entrada o Enviados, lo pasa a Eliminados y se acuerda de donde venía
     public eliminarCorreo(idCorreo: string): void {
-        const bandejas: Bandeja[] = [this._entrada, this._enviados];
+        const bandejas: BandejaCorreos[] = [this._entrada, this._enviados];
         const origen = bandejas.find(b => b.buscarPorId(idCorreo));
         if (!origen) {
             throw new Error('El correo no existe');

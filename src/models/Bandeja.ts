@@ -1,26 +1,27 @@
-import { Correo } from './Correo';
+import { IIdentificable } from './IIdentificable';
 
-export abstract class Bandeja {
-    protected correos: Correo[];
+// Bandeja generica: guarda cualquier cosa con id (correos o borradores) sin duplicarla
+export abstract class Bandeja<T extends IIdentificable> {
+    protected correos: T[];
 
     constructor() {
         this.correos = [];
     }
 
     // Busca un correo por su id, si no está devuelve undefined
-    public buscarPorId(idCorreo: string): Correo | undefined {
+    public buscarPorId(idCorreo: string): T | undefined {
         return this.correos.find(c => c.id === idCorreo);
     }
 
     // Método común para agregar un correo a la bandeja
-    public agregarCorreo(correo: Correo): void {
+    public agregarCorreo(correo: T): void {
         if (!this.buscarPorId(correo.id)) {
             this.correos.push(correo);
         }
     }
 
     // Método común para remover un correo por ID
-    public removerCorreo(idCorreo: string): Correo | undefined {
+    public removerCorreo(idCorreo: string): T | undefined {
         const index = this.correos.findIndex(c => c.id === idCorreo);
         if (index !== -1) {
             return this.correos.splice(index, 1)[0];
@@ -29,25 +30,7 @@ export abstract class Bandeja {
     }
 
     // Método común para obtener todos los correos (retornando una copia por seguridad)
-    public obtenerCorreos(): Correo[] {
+    public obtenerCorreos(): T[] {
         return [...this.correos];
-    }
-
-    // RF-08: filter devuelve un array nuevo, asi que no se toca la bandeja original
-    public obtenerNoLeidos(): Correo[] {
-        return this.correos.filter(c => !c.leido);
-    }
-
-    // Las heredan todas las bandejas, asi no se copian en cada una
-    public buscarPorAsunto(asunto: string): Correo[] {
-        const asuntoBuscado = asunto.toLowerCase().trim();
-        return this.correos.filter(c => c.asunto.toLowerCase().includes(asuntoBuscado));
-    }
-
-    public buscarPorDestinatario(destinatarioBuscado: string): Correo[] {
-        const textoBuscado = destinatarioBuscado.toLowerCase().trim();
-        return this.correos.filter(c =>
-            c.destinatarios.some(d => d.nombre.toLowerCase().includes(textoBuscado) || d.email.includes(textoBuscado))
-        );
     }
 }

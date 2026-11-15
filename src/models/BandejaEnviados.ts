@@ -1,5 +1,5 @@
-import { Bandeja } from './Bandeja';
+import { BandejaCorreos } from './BandejaCorreos';
 
-export class BandejaEnviados extends Bandeja {
+export class BandejaEnviados extends BandejaCorreos {
   // agregarCorreo, el control de duplicados y las búsquedas se heredan de Bandeja
 }

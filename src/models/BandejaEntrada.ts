@@ -1,7 +1,7 @@
-import { Bandeja } from './Bandeja';
+import { BandejaCorreos } from './BandejaCorreos';
 import { Correo } from './Correo';
 
-export class BandejaEntrada extends Bandeja {
+export class BandejaEntrada extends BandejaCorreos {
   // agregarCorreo, buscarPorId y el control de duplicados se heredan de Bandeja.
   // Marcar como leído lo hace el propio Correo: bandeja.buscarPorId(id)?.marcarComoLeido()
 
