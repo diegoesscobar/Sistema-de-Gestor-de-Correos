@@ -35,4 +35,13 @@ export class GestorCorreos {
             .forEach(destinatario => this.buzonDe(destinatario.email).recibirCorreo(correo.copiar()));
         return correo;
     }
+
+    // Eliminar es de UN usuario: solo se toca su buzón, los demás conservan su copia
+    public eliminarCorreo(emailUsuario: string, idCorreo: string): void {
+        this.buzonDe(emailUsuario).eliminarCorreo(idCorreo);
+    }
+
+    public restaurarCorreo(emailUsuario: string, idCorreo: string): void {
+        this.buzonDe(emailUsuario).restaurarCorreo(idCorreo);
+    }
 }
