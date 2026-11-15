@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { BandejaEliminados } from '../src/models/BandejaEliminados';
+import { BandejaEntrada } from '../src/models/BandejaEntrada';
 import { Correo } from '../src/models/Correo';
 import { Contacto } from '../src/models/Contacto';
 
@@ -57,5 +58,25 @@ describe('Pruebas unitarias: Bandeja de Eliminados', () => {
     expect(eliminados).toHaveLength(2);
     expect(eliminados[0].id).toBe('1');
     expect(eliminados[1].id).toBe('2');
+  });
+
+  it('Debería sacar el correo de su bandeja y después devolverlo a esa misma bandeja', () => {
+    const papelera = new BandejaEliminados();
+    const entrada = new BandejaEntrada();
+    entrada.agregarCorreo(new Correo('1', 'Hola', 'Texto', remitente, [destinatario]));
+
+    papelera.recibirDesde(entrada, '1');
+    expect(entrada.obtenerCorreos()).toHaveLength(0);
+    expect(papelera.obtenerCorreos()).toHaveLength(1);
+
+    papelera.restaurar('1');
+    expect(entrada.obtenerCorreos()).toHaveLength(1);
+    expect(papelera.obtenerCorreos()).toHaveLength(0);
+  });
+
+  it('Debería lanzar error si el correo no está en la bandeja de origen o en la papelera', () => {
+    const papelera = new BandejaEliminados();
+    expect(() => papelera.recibirDesde(new BandejaEntrada(), 'x')).toThrow('El correo no existe');
+    expect(() => papelera.restaurar('x')).toThrow('El correo no está en Eliminados');
   });
 });
