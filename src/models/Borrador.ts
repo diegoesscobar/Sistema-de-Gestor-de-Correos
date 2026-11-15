@@ -32,14 +32,16 @@ export class Borrador implements IIdentificable {
         if (destinatarios !== undefined) this._destinatarios = [...destinatarios];
     }
 
-    // El borrador puede estar incompleto, pero para enviarlo necesita remitente, asunto, contenido y al menos un destinatario
+    // Cada requisito es una lambda: para agregar uno nuevo se suma a la lista, sin tocar esValidoParaEnviar
+    private readonly requisitosDeEnvio: Array<(b: Borrador) => boolean> = [
+        b => b.remitente !== undefined,
+        b => b.asunto.trim().length > 0,
+        b => b.contenido.trim().length > 0,
+        b => b.destinatarios.length > 0
+    ];
+
+    // El borrador puede estar incompleto, pero para enviarse tiene que cumplir todos los requisitos
     public esValidoParaEnviar(): boolean {
-        if (!this.remitente || this.asunto.trim().length === 0) {
-            return false;
-        }
-        if (this.contenido.trim().length === 0) {
-            return false;
-        }
-        return this.destinatarios.length > 0;
+        return this.requisitosDeEnvio.every(requisito => requisito(this));
     }
 }

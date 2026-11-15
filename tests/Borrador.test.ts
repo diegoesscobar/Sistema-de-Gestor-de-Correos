@@ -27,6 +27,11 @@ describe('RF-07: Borrador', () => {
         expect(borrador.esValidoParaEnviar()).toBe(false);
     });
 
+    it('No debería ser válido sin remitente o sin destinatarios', () => {
+        expect(new Borrador('b6', 'TP', 'Cuerpo', undefined, [dest1]).esValidoParaEnviar()).toBe(false);
+        expect(new Borrador('b7', 'TP', 'Cuerpo', remitente, []).esValidoParaEnviar()).toBe(false);
+    });
+
     it('Los destinatarios no se pueden modificar desde afuera, solo con editar', () => {
         const borrador = new Borrador('b5', 'TP', 'Cuerpo', remitente, [dest1]);
         (borrador.destinatarios as Contacto[]).push(remitente);
