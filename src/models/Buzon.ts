@@ -10,6 +10,7 @@ import { IGeneradorId } from './IGeneradorId';
 import { GeneradorIdSecuencial } from './GeneradorIdSecuencial';
 import { IFiltro } from './IFiltro';
 import { RegistroFiltros } from './RegistroFiltros';
+import { coincideTexto } from './PredicadosCorreo';
 
 // Las bandejas de UN usuario. Repartir correos entre usuarios lo hace el GestorCorreos
 export class Buzon {
@@ -70,6 +71,11 @@ export class Buzon {
     // Simula la llegada de un correo a la bandeja de entrada
     public recibirCorreo(correo: Correo): void {
         this._entrada.agregarCorreo(correo);
+    }
+
+    // RF-04: busca en asunto, contenido, remitente y destinatarios sin tocar los correos
+    public buscarEnEntrada(texto: string): Correo[] {
+        return this._entrada.obtenerCorreos().filter(coincideTexto(texto));
     }
 
     public obtenerEntrada(): Correo[] {
