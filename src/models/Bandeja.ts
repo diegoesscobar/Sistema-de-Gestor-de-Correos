@@ -38,7 +38,7 @@ export abstract class Bandeja {
         return this.correos.filter(c => !c.leido);
     }
 
-    // Estaban copiadas en Enviados y Salidas, ahora las heredan todas las bandejas
+    // Las heredan todas las bandejas, asi no se copian en cada una
     public buscarPorAsunto(asunto: string): Correo[] {
         const asuntoBuscado = asunto.toLowerCase().trim();
         return this.correos.filter(c => c.asunto.toLowerCase().includes(asuntoBuscado));
