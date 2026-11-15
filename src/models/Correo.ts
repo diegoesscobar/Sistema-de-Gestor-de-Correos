@@ -15,7 +15,7 @@ export class Correo implements IIdentificable {
     public readonly asunto: string,
     public readonly contenido: string,
     public readonly remitente: Contacto,
-    destinatarios: Contacto[]
+    destinatarios: ReadonlyArray<Contacto>
   ) {
     if (!id || !asunto || !contenido || !remitente || !destinatarios || destinatarios.length === 0) {
       throw new Error('Faltan datos obligatorios');
