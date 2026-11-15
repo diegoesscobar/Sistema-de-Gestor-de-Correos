@@ -24,12 +24,12 @@ export class Borrador implements IIdentificable {
         return [...this._destinatarios];
     }
 
-    // El borrador cambia sus propios datos, solo los que le pasen
+    // El borrador cambia sus propios datos: lo que no le pasen (undefined) se queda como estaba
     public editar(asunto?: string, contenido?: string, remitente?: Contacto, destinatarios?: Contacto[]): void {
-        if (asunto !== undefined) this._asunto = asunto;
-        if (contenido !== undefined) this._contenido = contenido;
-        if (remitente !== undefined) this._remitente = remitente;
-        if (destinatarios !== undefined) this._destinatarios = [...destinatarios];
+        this._asunto = asunto ?? this._asunto;
+        this._contenido = contenido ?? this._contenido;
+        this._remitente = remitente ?? this._remitente;
+        this._destinatarios = [...(destinatarios ?? this._destinatarios)];
     }
 
     // Cada requisito es una lambda: para agregar uno nuevo se suma a la lista, sin tocar esValidoParaEnviar
