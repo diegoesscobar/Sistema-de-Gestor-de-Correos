@@ -7,7 +7,8 @@ import { BandejaEntrada } from './BandejaEntrada';
 import { BandejaEnviados } from './BandejaEnviados';
 import { BandejaEliminados } from './BandejaEliminados';
 
-export class GestorCorreos {
+// Las bandejas de UN usuario. Repartir correos entre usuarios lo hace el GestorCorreos
+export class Buzon {
     private _borradores: BandejaBorradores = new BandejaBorradores();
     private _entrada: BandejaEntrada = new BandejaEntrada();
     private _enviados: BandejaEnviados = new BandejaEnviados();
