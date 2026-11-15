@@ -19,13 +19,13 @@ export class GestorCorreos {
     public crearBorrador(): Borrador {
         this._contadorBorradores++;
         const borrador = new Borrador('b' + this._contadorBorradores);
-        this._borradores.agregarBorrador(borrador);
+        this._borradores.agregarCorreo(borrador);
         return borrador;
     }
 
     // Busca el borrador y si no está corta con error, asi no se repite en cada método
     private buscarBorradorOError(idBorrador: string): Borrador {
-        const borrador = this._borradores.obtenerBorrador(idBorrador);
+        const borrador = this._borradores.buscarPorId(idBorrador);
         if (!borrador) {
             throw new Error('El borrador no existe');
         }
@@ -38,11 +38,11 @@ export class GestorCorreos {
     }
 
     public obtenerBorrador(idBorrador: string): Borrador | undefined {
-        return this._borradores.obtenerBorrador(idBorrador);
+        return this._borradores.buscarPorId(idBorrador);
     }
 
     public obtenerBorradores(): Borrador[] {
-        return this._borradores.obtenerBorradores();
+        return this._borradores.obtenerCorreos();
     }
 
     // RF-02: el borrador válido se convierte en Correo, sale de Borradores y pasa a Enviados
@@ -52,7 +52,7 @@ export class GestorCorreos {
             throw new Error('El borrador no está completo para enviarse');
         }
         const correo = new Correo(borrador.id, borrador.asunto, borrador.contenido, borrador.remitente!, borrador.destinatarios);
-        this._borradores.removerBorrador(idBorrador);
+        this._borradores.removerCorreo(idBorrador);
         this._enviados.agregarCorreo(correo);
         return correo;
     }
