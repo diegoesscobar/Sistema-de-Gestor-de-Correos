@@ -52,4 +52,20 @@ describe('RF-01: Entidad Correo Base', () => {
             expect(correo.favorito).toBe(false);
         });
     });
+
+    describe('Copia para cada destinatario', () => {
+        it('La copia tiene el mismo mensaje pero su propio estado de leído y favorito', () => {
+            const original = new Correo('1', 'TP', 'Cuerpo', remitente, [dest1]);
+            const copia = original.copiar();
+
+            copia.marcarComoLeido();
+            copia.alternarFavorito();
+
+            expect(copia).not.toBe(original);
+            expect(copia.asunto).toBe('TP');
+            expect(copia.destinatarios).toEqual(original.destinatarios);
+            expect(original.leido).toBe(false);
+            expect(original.favorito).toBe(false);
+        });
+    });
 });

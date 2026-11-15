@@ -25,6 +25,11 @@ export class Correo implements IIdentificable {
     this._destinatarios = [...destinatarios]; // Copia inicial
   }
 
+  // Cada destinatario recibe su propia copia: mismo mensaje, pero leído y favorito arrancan de cero
+  public copiar(): Correo {
+    return new Correo(this.id, this.asunto, this.contenido, this.remitente, this._destinatarios);
+  }
+
   // Retorna una copia para que nadie modifique el array original
   public get destinatarios(): ReadonlyArray<Contacto> {
     return [...this._destinatarios];
