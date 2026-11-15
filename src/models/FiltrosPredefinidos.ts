@@ -1,6 +1,7 @@
 import { Filtro } from './Filtro';
-import { y } from './Predicado';
-import { delDominio, asuntoContiene, contenidoContiene, noLeido } from './PredicadosCorreo';
+import { Contacto } from './Contacto';
+import { y, o, no } from './Predicado';
+import { delDominio, asuntoContiene, contenidoContiene, noLeido, esLeido, esFavorito, enviadoPor } from './PredicadosCorreo';
 
 // Los filtros del enunciado: se arman reutilizando predicados, ninguno escribe la condición de cero
 const esDeLaUCP = delDominio('@ucp.edu.ar');
@@ -13,3 +14,10 @@ export const academicosImportantes = (): Filtro =>
 
 export const pendientesDeRevision = (): Filtro =>
     new Filtro('Pendientes de revisión', y(noLeido, contenidoContiene('Entrega')));
+
+export const personalesPrioritarios = (contacto: Contacto): Filtro =>
+    new Filtro('Correos personales prioritarios', y(esFavorito, enviadoPor(contacto)));
+
+// Asunto con "Proyecto" o "Reunión", sacando los leídos
+export const paraSeguimiento = (): Filtro =>
+    new Filtro('Correos para seguimiento', y(o(asuntoContiene('Proyecto'), asuntoContiene('Reunión')), no(esLeido)));

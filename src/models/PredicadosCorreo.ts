@@ -1,6 +1,6 @@
 import { Correo } from './Correo';
 import { Contacto } from './Contacto';
-import { Predicado } from './Predicado';
+import { Predicado, no } from './Predicado';
 
 // Cada función recibe el dato a buscar y devuelve la lambda que evalúa el correo (no guarda correos)
 const incluye = (texto: string, buscado: string): boolean =>
@@ -15,8 +15,10 @@ export const asuntoContiene = (texto: string): Predicado<Correo> =>
 export const contenidoContiene = (texto: string): Predicado<Correo> =>
     correo => incluye(correo.contenido, texto);
 
-// Estos no necesitan dato: son predicados directos que leen el estado del correo
-export const noLeido: Predicado<Correo> = correo => !correo.leido;
+// Los de estado no reciben dato: leen el estado actual del correo cada vez que se evalúan
+export const esLeido: Predicado<Correo> = correo => correo.leido;
+
+export const noLeido: Predicado<Correo> = no(esLeido); // se reutiliza negándolo
 
 export const esFavorito: Predicado<Correo> = correo => correo.favorito;
 

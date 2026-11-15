@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { Correo } from '../src/models/Correo';
 import { Contacto } from '../src/models/Contacto';
-import { correosDeLaUCP, academicosImportantes, pendientesDeRevision } from '../src/models/FiltrosPredefinidos';
+import { correosDeLaUCP, academicosImportantes, pendientesDeRevision, personalesPrioritarios, paraSeguimiento } from '../src/models/FiltrosPredefinidos';
 
 describe('RF-05: Filtros complejos del enunciado', () => {
     const profe = new Contacto('Profe', 'profe@ucp.edu.ar');
@@ -23,5 +23,23 @@ describe('RF-05: Filtros complejos del enunciado', () => {
 
         entregaUCP.marcarComoLeido();
         expect(filtro.aplicar(correos)).toEqual([examenAfuera]);
+    });
+
+    it('Personales prioritarios pide que sea favorito y de ese contacto', () => {
+        const deAmigo = new Correo('4', 'Hola', 'Texto', amigo, [yo]);
+        const deProfe = new Correo('5', 'Hola', 'Texto', profe, [yo]);
+        deAmigo.alternarFavorito();
+        deProfe.alternarFavorito();
+
+        expect(personalesPrioritarios(amigo).aplicar([deAmigo, deProfe, examenAfuera])).toEqual([deAmigo]);
+    });
+
+    it('Para seguimiento toma Proyecto o Reunión y saca los leídos', () => {
+        const proyecto = new Correo('6', 'Proyecto final', 'Texto', profe, [yo]);
+        const reunion = new Correo('7', 'Reunión del lunes', 'Texto', profe, [yo]);
+        const reunionLeida = new Correo('8', 'Reunión vieja', 'Texto', profe, [yo]);
+        reunionLeida.marcarComoLeido();
+
+        expect(paraSeguimiento().aplicar([proyecto, reunion, reunionLeida, examenUCP])).toEqual([proyecto, reunion]);
     });
 });
