@@ -35,6 +35,10 @@ npx vitest run --coverage # tests con reporte de cobertura
 | `Filtro`, `RegistroFiltros`, `FiltrosPredefinidos` | Filtros con nombre (máximo 5) que no guardan correos | RF-05 |
 | `EstadisticasCorreos` | Resúmenes con `map`, `filter` y `reduce` | RF-10 |
 
+### Diagrama de clases UML
+
+![Diagrama de clases UML del Gestor de Correos](docs/uml.png)
+
 ### Decisiones principales
 * **Cada destinatario recibe su propia copia del correo** (`Correo.copiar()`), así leer, marcar favorito o eliminar en un buzón no afecta a los demás.
 * **Polimorfismo en vez de ifs**: cada bandeja dice su `nombre` y si `incluyeEnFavoritos()`. La papelera responde `false`, por eso los eliminados no aparecen en favoritos hasta restaurarlos.
