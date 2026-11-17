@@ -1,5 +1,6 @@
 // Resumen de la suite: los tests más importantes de cada requisito juntos en un solo archivo,
 // para mostrar el TP de punta a punta. Cada test indica de qué archivo sale el original.
+// Son tantas líneas porque copié y pegué los tests más importantes de cada archivo, los originales siguen en su lugar.
 import { describe, it, expect, beforeEach } from 'vitest';
 import { GestorCorreos } from '../src/models/GestorCorreos';
 import { Buzon } from '../src/models/Buzon';
