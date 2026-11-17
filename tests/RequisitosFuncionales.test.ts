@@ -10,12 +10,15 @@ import { Agenda } from '../src/models/Agenda';
 import { Filtro } from '../src/models/Filtro';
 import { RegistroFiltros } from '../src/models/RegistroFiltros';
 import { EstadisticasCorreos } from '../src/models/EstadisticasCorreos';
+import { GeneradorIdSecuencial } from '../src/models/GeneradorIdSecuencial';
 import { Bandeja } from '../src/models/Bandeja';
 import { IIdentificable } from '../src/models/IIdentificable';
 import { BandejaEntrada } from '../src/models/BandejaEntrada';
 import { BandejaEnviados } from '../src/models/BandejaEnviados';
 import { BandejaEliminados } from '../src/models/BandejaEliminados';
 import { BandejaBorradores } from '../src/models/BandejaBorradores';
+import { EstadoLeido } from '../src/models/EstadoLeido';
+import { EstadoNoLeido } from '../src/models/EstadoNoLeido';
 import { y, o, no } from '../src/models/Predicado';
 import { delDominio, asuntoContiene, noLeido } from '../src/models/PredicadosCorreo';
 import { pendientesDeRevision } from '../src/models/FiltrosPredefinidos';
@@ -352,5 +355,123 @@ describe('Requisitos funcionales', () => {
             expect(estadisticas.contarPorRemitente().get('ana@ucp.edu.ar')).toBe(2);
             expect(estadisticas.contarPorRemitente().get('beto@gmail.com')).toBe(1);
         });
+    });
+});
+
+describe('Preguntas del profe', () => {
+    // Correo.test.ts: cada destinatario recibe su propia copia (Correo.copiar())
+    it('¿Si Beto lee el correo, a Ana le aparece leído? No, cada uno tiene su copia', () => {
+        const enviado = enviarDeAna('TP', 'Cuerpo', [beto]);
+        const recibido = buzonBeto.obtenerEntrada()[0];
+
+        recibido.marcarComoLeido();
+        recibido.alternarFavorito();
+
+        expect(recibido).not.toBe(enviado);
+        expect(recibido.asunto).toBe(enviado.asunto); // mismo mensaje
+        expect(enviado.leido).toBe(false); // estado propio
+        expect(enviado.favorito).toBe(false);
+    });
+
+    // GestorCorreos.test.ts: eliminar es de un solo usuario
+    it('¿Si Beto elimina el correo, Carla lo pierde? No, los buzones son independientes', () => {
+        const correo = enviarDeAna('Examen', 'Temario', [beto, carla]);
+
+        gestor.eliminarCorreo(beto.email, correo.id);
+
+        expect(buzonBeto.obtenerEntrada()).toHaveLength(0);
+        expect(buzonBeto.obtenerEliminados()).toHaveLength(1);
+        expect(buzonCarla.obtenerEntrada()).toHaveLength(1);
+        expect(buzonAna.obtenerEnviados()).toHaveLength(1);
+    });
+
+    // Correo.test.ts: el getter devuelve una copia del array (copia defensiva)
+    it('¿Se pueden tocar los destinatarios desde afuera? No, se devuelve una copia', () => {
+        const correo = new Correo('1', 'TP', 'Cuerpo', ana, [beto]);
+
+        (correo.destinatarios as Contacto[]).push(carla);
+
+        expect(correo.destinatarios).toHaveLength(1);
+    });
+
+    // Filtro.test.ts: el filtro guarda la condición, no los correos
+    it('¿El filtro guarda correos? No, evalúa cada vez y refleja los cambios', () => {
+        const correos = crearCorreos(100);
+        const pendientes = new Filtro('Exámenes pendientes', y(noLeido, asuntoContiene('Examen')));
+        expect(pendientes.aplicar(correos)).toHaveLength(20); // todos arrancan sin leer
+
+        const examenes = correos.filter(c => c.asunto.startsWith('Examen'));
+        examenes.slice(0, 5).forEach(c => c.marcarComoLeido());
+
+        expect(pendientes.aplicar(correos)).toHaveLength(15);
+    });
+
+    // Buzon.test.ts: inversión de dependencias, el gestor les pasa a todos el mismo IGeneradorId
+    it('¿Los ids se repiten entre usuarios? No, todos comparten el mismo generador', () => {
+        const generador = new GeneradorIdSecuencial();
+        const buzon1 = new Buzon(generador);
+        const buzon2 = new Buzon(generador);
+
+        expect(buzon1.crearBorrador().id).not.toBe(buzon2.crearBorrador().id);
+        expect(buzonAna.crearBorrador().id).not.toBe(buzonBeto.crearBorrador().id); // lo mismo a través del gestor
+    });
+
+    // EstadoCorreo.test.ts: patrón State, cada estado sabe a cuál pasar
+    it('¿Cómo cambia de estado sin ifs? Cada estado devuelve el siguiente', () => {
+        const leido = new EstadoNoLeido().marcarLeido();
+        expect(leido).toBeInstanceOf(EstadoLeido);
+        expect(leido.estaLeido()).toBe(true);
+
+        const otraVezNoLeido = new EstadoLeido().marcarNoLeido();
+        expect(otraVezNoLeido).toBeInstanceOf(EstadoNoLeido);
+        expect(otraVezNoLeido.estaLeido()).toBe(false);
+    });
+
+    // Agenda.test.ts: la agenda y los correos son independientes
+    it('¿Eliminar un contacto borra sus correos? No, el correo conserva al remitente', () => {
+        const agenda = new Agenda();
+        const anaEnAgenda = new Contacto('Ana', 'ana@ucp.edu.ar');
+        agenda.agregar(anaEnAgenda);
+        const correo = new Correo('1', 'TP', 'Cuerpo', anaEnAgenda, [beto]);
+
+        agenda.eliminar('ana@ucp.edu.ar');
+
+        expect(agenda.obtenerContactos()).toHaveLength(0);
+        expect(correo.remitente.nombre).toBe('Ana');
+        expect(() => agenda.eliminar('ana@ucp.edu.ar')).toThrow('No existe un contacto con ese email');
+    });
+
+    // Buzon.test.ts: BandejaEliminados solo restaura lo que recibió
+    it('¿Qué pasa al restaurar algo que no está en Eliminados? Tira error', () => {
+        expect(() => buzonAna.restaurarCorreo('x')).toThrow('El correo no está en Eliminados');
+    });
+
+    // Buzon.test.ts: solo se elimina desde Entrada o Enviados
+    it('¿Se puede eliminar un correo que ya está en Eliminados? No', () => {
+        buzonBeto.recibirCorreo(new Correo('c1', 'Hola', 'Texto', ana, [beto]));
+        buzonBeto.eliminarCorreo('c1');
+
+        expect(() => buzonBeto.eliminarCorreo('c1')).toThrow('El correo no existe');
+    });
+
+    // Buzon.test.ts (comentado allá): la validación del borrador frena el envío
+    it('¿Se puede enviar un borrador incompleto? No, y queda en Borradores', () => {
+        const borrador = buzonAna.crearBorrador();
+        buzonAna.editarBorrador(borrador.id, 'TP', '', ana, [beto]); // sin contenido
+
+        expect(() => buzonAna.enviarBorrador(borrador.id)).toThrow('El borrador no está completo para enviarse');
+        expect(buzonAna.obtenerBorradores()).toHaveLength(1);
+        expect(buzonAna.obtenerEnviados()).toHaveLength(0);
+    });
+
+    // Buzon.test.ts (comentado allá): después de enviarlo, el borrador ya no existe
+    it('¿Se puede enviar el mismo borrador dos veces? No, el correo no se duplica', () => {
+        const borrador = buzonAna.crearBorrador();
+        buzonAna.editarBorrador(borrador.id, 'TP', 'Cuerpo', ana, [beto]);
+
+        buzonAna.enviarBorrador(borrador.id);
+
+        expect(() => buzonAna.enviarBorrador(borrador.id)).toThrow('El borrador no existe');
+        expect(buzonAna.obtenerEnviados()).toHaveLength(1);
     });
 });
