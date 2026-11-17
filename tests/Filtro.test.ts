@@ -2,7 +2,8 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { Filtro } from '../src/models/Filtro';
 import { Correo } from '../src/models/Correo';
 import { Contacto } from '../src/models/Contacto';
-import { delDominio } from '../src/models/PredicadosCorreo';
+import { y, o, no } from '../src/models/Predicado';
+import { delDominio, asuntoContiene, noLeido } from '../src/models/PredicadosCorreo';
 
 describe('RF-05: Filtro', () => {
     const profe = new Contacto('Profe', 'profe@ucp.edu.ar');
@@ -59,5 +60,46 @@ describe('RF-05: Filtro sobre una colección grande', () => {
         expect(filtro.aplicar(correos.slice(0, 10))).toHaveLength(4); // 0, 3, 6, 9
         expect(filtro.aplicar(correos)).toHaveLength(34);
         expect(filtro.aplicar(correos)).toEqual(filtro.aplicar(correos));
+    });
+
+    it('Los filtros compuestos evalúan bien y, o, no sobre los 100 correos', () => {
+        const esDeLaUCP = delDominio('@ucp.edu.ar');
+        const esExamen = asuntoContiene('Examen');
+
+        const ambos = new Filtro('UCP y examen', y(esDeLaUCP, esExamen)).aplicar(correos);
+        const alguno = new Filtro('UCP o examen', o(esDeLaUCP, esExamen)).aplicar(correos);
+        const soloUCP = new Filtro('UCP sin examen', y(esDeLaUCP, no(esExamen))).aplicar(correos);
+
+        expect(ambos).toEqual(correos.filter((_, i) => i % 3 === 0 && i % 5 === 0));
+        expect(ambos).toHaveLength(7); // 0, 15, 30, 45, 60, 75, 90
+        expect(alguno).toEqual(correos.filter((_, i) => i % 3 === 0 || i % 5 === 0));
+        expect(alguno).toHaveLength(47); // 34 + 20 - 7 que están en los dos
+        expect(soloUCP).toEqual(correos.filter((_, i) => i % 3 === 0 && i % 5 !== 0));
+        expect(soloUCP).toHaveLength(27); // 34 - 7
+    });
+
+    it('Los cambios en los correos se reflejan al volver a aplicar el mismo filtro', () => {
+        const pendientes = new Filtro('Examenes pendientes', y(noLeido, asuntoContiene('Examen')));
+        expect(pendientes.aplicar(correos)).toHaveLength(20); // todos arrancan sin leer
+
+        const examenes = correos.filter(c => c.asunto.startsWith('Examen'));
+        examenes.slice(0, 5).forEach(c => c.marcarComoLeido());
+
+        expect(pendientes.aplicar(correos)).toHaveLength(15);
+
+        examenes.slice(0, 5).forEach(c => c.marcarComoNoLeido());
+
+        expect(pendientes.aplicar(correos)).toHaveLength(20);
+    });
+
+    it('Aplicar un filtro no modifica la colección original ni los correos', () => {
+        const idsAntes = correos.map(c => c.id);
+        const filtro = new Filtro('Correos de la UCP', delDominio('@ucp.edu.ar'));
+
+        filtro.aplicar(correos);
+
+        expect(correos).toHaveLength(100);
+        expect(correos.map(c => c.id)).toEqual(idsAntes);
+        expect(correos.every(c => !c.leido && !c.favorito)).toBe(true);
     });
 });
